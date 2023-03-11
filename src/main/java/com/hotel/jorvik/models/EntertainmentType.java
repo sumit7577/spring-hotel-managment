@@ -2,7 +2,7 @@ package com.hotel.jorvik.models;
 
 import lombok.Data;
 import jakarta.persistence.*;
-
+import jakarta.validation.constraints.*;
 
 @Data
 @Entity
@@ -14,9 +14,12 @@ public class EntertainmentType {
     @Column(name = "ID")
     private Integer id;
 
+    @NotBlank
+    @Size(min = 3, max = 50, message = "Name cannot be less that 3 and more than 50 characters")
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Positive
     @Column(name = "price", nullable = false)
     private Integer price;
 
