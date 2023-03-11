@@ -18,10 +18,10 @@ public class Weekend {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "dateFrom", nullable = false)
+    @Column(name = "date_from", nullable = false)
     private Timestamp dateFrom;
 
-    @Column(name = "dateTo", nullable = false)
+    @Column(name = "date_to", nullable = false)
     private Timestamp dateTo;
 
     public Weekend() {
