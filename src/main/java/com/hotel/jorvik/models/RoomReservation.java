@@ -3,6 +3,7 @@ package com.hotel.jorvik.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Date;
+import jakarta.validation.constraints.*;
 
 @Data
 @Entity
@@ -12,16 +13,22 @@ public class RoomReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
+    @FutureOrPresent
     @Column(name = "fromDate", nullable = false)
     private Date fromDate;
 
+    @NotNull
+    @Future
     @Column(name = "toDate", nullable = false)
     private Date toDate;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roomNumber", referencedColumnName = "number")
     private Room room;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID", referencedColumnName = "ID")
     private User user;

@@ -3,6 +3,7 @@ package com.hotel.jorvik.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Timestamp;
+import jakarta.validation.constraints.*;
 
 @Data
 @Entity
@@ -12,9 +13,13 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
+    @FutureOrPresent
     @Column(name = "date", nullable = false)
     private Timestamp date;
 
+    @NotNull
+    @Positive
     @Column(name = "amount", nullable = false)
     private int amount;
 
