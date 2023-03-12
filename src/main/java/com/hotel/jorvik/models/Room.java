@@ -15,7 +15,7 @@ public class Room {
     @Positive
     private int number;
 
-    @Column(name = "accessCode", nullable = false)
+    @Column(name = "access_code", nullable = false)
     @Positive
     private int accessCode;
 
@@ -25,14 +25,14 @@ public class Room {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomTypeID", referencedColumnName = "ID")
+    @JoinColumn(name = "roomType_ID", referencedColumnName = "ID")
     private RoomType roomType;
 
-    @Column(name = "cleaningRequest")
+    @Column(name = "cleaning_request")
     private Timestamp cleaningRequest;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    private List<RoomReservation> roomReservations;
+    private List<RoomReservations> roomReservations;
 
     public Room() {
     }

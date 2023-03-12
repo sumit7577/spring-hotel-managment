@@ -3,26 +3,32 @@ package com.hotel.jorvik.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "User")
+@Table(name = "User", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "phone")
+})
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Long id;
+    private int id;
 
     @NotBlank(message = "Name is required")
     @Size(min = 3, max = 50, message = "Name cannot be less that 3 and more than 50 characters")
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     private String firstName;
 
     @NotBlank(message = "LastName is required")
     @Size(min = 3, max = 50, message = "LastName cannot be less that 3 and more than 50 characters")
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     private String lastName;
 
     @NotBlank(message = "Email is required")
@@ -52,24 +58,25 @@ public class User {
     @Column(name = "salt")
     private String salt;
 
-    @Column(name = "refreshToken")
+    @Column(name = "refresh_token")
     private String refreshToken;
 
-    @NotNull(message = "Role is required")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleID")
-    private Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "UserRoles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<EntertainmentReservation> entertainmentReservations;
+    private List<EntertainmentReservations> entertainmentReservations;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<RoomReservation> roomReservations;
+    private List<RoomReservations> roomReservations;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String phone, int discount, String hash, String salt, String refreshToken, Role role) {
+    public User(String firstName, String lastName, String email, String phone, int discount, String hash, String salt, String refreshToken) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -78,6 +85,5 @@ public class User {
         this.hash = hash;
         this.salt = salt;
         this.refreshToken = refreshToken;
-        this.role = role;
     }
 }

@@ -8,8 +8,8 @@ import java.sql.Time;
 
 @Data
 @Entity
-@Table(name = "EntertainmentReservation")
-public class EntertainmentReservation {
+@Table(name = "EntertainmentReservations")
+public class EntertainmentReservations {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,23 +27,23 @@ public class EntertainmentReservation {
 
     @NotNull(message = "User is required")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "user_ID")
     private User user;
 
     @NotNull(message = "Entertainment is required")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entertainmentID")
+    @JoinColumn(name = "entertainment_ID")
     private Entertainment entertainment;
 
     @NotNull(message = "Payment is required")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paymentID")
+    @JoinColumn(name = "payment_ID")
     private Payment payment;
 
-    public EntertainmentReservation() {
+    public EntertainmentReservations() {
     }
 
-    public EntertainmentReservation(Date date, Time time, User user, Entertainment entertainment, Payment payment) {
+    public EntertainmentReservations(Date date, Time time, User user, Entertainment entertainment, Payment payment) {
         this.date = date;
         this.time = time;
         this.user = user;
