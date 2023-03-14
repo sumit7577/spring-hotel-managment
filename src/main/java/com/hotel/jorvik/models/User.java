@@ -1,13 +1,16 @@
 package com.hotel.jorvik.models;
 
+import com.hotel.jorvik.models.enums.ERole;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -15,7 +18,7 @@ import java.util.Set;
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "phone")
 })
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -43,29 +46,19 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
-
     @NotNull
     @Min(value = 0, message = "Discount must be a non-negative number")
     @Max(value = 100, message = "Discount cannot be greater than 100")
     @Column(name = "discount")
     private int discount;
 
-    @NotBlank(message = "Hash is required")
-    @Column(name = "hash")
-    private String hash;
+    @NotBlank(message = "Password is required")
+    @Column(name = "password")
+    private String password;
 
-    @NotBlank(message = "Salt is required")
-    @Column(name = "salt")
-    private String salt;
-
-    @Column(name = "refresh_token")
-    private String refreshToken;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "UserRoles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    ERole role;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<EntertainmentReservations> entertainmentReservations;
@@ -76,14 +69,48 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String phone, int discount, String hash, String salt, String refreshToken) {
+    public User(String firstName, String lastName, String email, String phone, int discount, String password, ERole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.discount = discount;
-        this.hash = hash;
-        this.salt = salt;
-        this.refreshToken = refreshToken;
+        this.password = password;
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
