@@ -7,40 +7,40 @@ import jakarta.validation.constraints.*;
 
 @Data
 @Entity
-@Table(name = "RoomReservation")
-public class RoomReservation {
+@Table(name = "RoomReservations")
+public class RoomReservations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotNull
     @FutureOrPresent
-    @Column(name = "fromDate", nullable = false)
+    @Column(name = "from_date", nullable = false)
     private Date fromDate;
 
     @NotNull
     @Future
-    @Column(name = "toDate", nullable = false)
+    @Column(name = "to_date", nullable = false)
     private Date toDate;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomNumber", referencedColumnName = "number")
+    @JoinColumn(name = "room_number", referencedColumnName = "number")
     private Room room;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", referencedColumnName = "ID")
+    @JoinColumn(name = "user_ID", referencedColumnName = "ID")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paymentID", referencedColumnName = "ID")
+    @JoinColumn(name = "payment_ID", referencedColumnName = "ID")
     private Payment payment;
 
-    public RoomReservation() {
+    public RoomReservations() {
     }
 
-    public RoomReservation(Date fromDate, Date toDate, Room room, User user, Payment payment) {
+    public RoomReservations(Date fromDate, Date toDate, Room room, User user, Payment payment) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.room = room;

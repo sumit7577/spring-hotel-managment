@@ -16,18 +16,18 @@ public class MenuItem {
     private Integer id;
 
     @NotNull
-    @Column(name = "menuDate", nullable = false)
+    @Column(name = "menu_Date", nullable = false)
     @FutureOrPresent
     private Date menuDate;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dishID")
+    @JoinColumn(name = "dish_ID")
     private Dish dish;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menuTypeID")
+    @JoinColumn(name = "menuType_ID")
     private MenuType menuType;
 
     public MenuItem() {

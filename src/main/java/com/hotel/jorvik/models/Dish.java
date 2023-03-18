@@ -26,7 +26,7 @@ public class Dish {
     private String description;
 
     @NotBlank(message = "Photo is required")
-    @Column(name = "photoDirectory")
+    @Column(name = "photo_directory")
     private String photoDirectory;
 
     public Dish() {

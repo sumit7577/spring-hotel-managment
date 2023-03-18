@@ -1,26 +1,33 @@
 package com.hotel.jorvik.models;
 
+import com.hotel.jorvik.models.enums.ERole;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.Data;
-import jakarta.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
 
 @Data
 @Entity
 @Table(name = "Role")
-public class Role {
+public class Role implements GrantedAuthority {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank(message = "Name is required")
-    @Size(min = 2, max = 50, message = "Name cannot be less that 2 and more than 50 characters")
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name", nullable = false, unique = true)
+    private ERole name;
 
     public Role() {
     }
 
-    public Role(String name) {
+    public Role(ERole name) {
         this.name = name;
+    }
+
+    @Override
+    public String getAuthority() {
+        return name.name();
     }
 }

@@ -22,11 +22,11 @@ public class Entertainment {
 
     @NotNull(message = "Entertainment type is required")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entertainmentTypeID")
+    @JoinColumn(name = "entertainmentType_ID")
     private EntertainmentType entertainmentType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entertainment")
-    private List<EntertainmentReservation> entertainmentReservations;
+    private List<EntertainmentReservations> entertainmentReservations;
 
     public Entertainment() {
     }

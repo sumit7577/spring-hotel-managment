@@ -15,7 +15,7 @@ public class RoomType {
 
     @NonNull
     @Positive
-    @Column(name = "roomOccupancy", nullable = false)
+    @Column(name = "room_occupancy", nullable = false)
     private int roomOccupancy;
 
     @NonNull
@@ -25,7 +25,7 @@ public class RoomType {
 
     @NonNull
     @Positive
-    @Column(name = "roomArea", nullable = false)
+    @Column(name = "room_area", nullable = false)
     private int roomArea;
 
     public RoomType() {
