@@ -1,4 +1,4 @@
-package com.hotel.jorvik.services;
+package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.Role;
 import com.hotel.jorvik.models.User;
@@ -9,6 +9,7 @@ import com.hotel.jorvik.security.AuthenticationRequest;
 import com.hotel.jorvik.security.AuthenticationResponse;
 import com.hotel.jorvik.security.JwtService;
 import com.hotel.jorvik.security.RegisterRequest;
+import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImp implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;

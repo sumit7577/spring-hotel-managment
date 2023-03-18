@@ -1,13 +1,8 @@
 package com.hotel.jorvik.models;
 
-import com.hotel.jorvik.models.enums.ERole;
-import com.hotel.jorvik.repositories.WeekendRepository;
-import com.hotel.jorvik.services.AuthenticationService;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 import jakarta.validation.constraints.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

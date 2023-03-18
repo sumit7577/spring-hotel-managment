@@ -2,7 +2,7 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.security.AuthenticationRequest;
 import com.hotel.jorvik.security.AuthenticationResponse;
-import com.hotel.jorvik.services.AuthenticationService;
+import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import com.hotel.jorvik.security.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
