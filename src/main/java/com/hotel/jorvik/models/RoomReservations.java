@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 
 @Data
 @Entity
-@Table(name = "RoomReservations")
+@Table(name = "Room_Reservations")
 public class RoomReservations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

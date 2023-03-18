@@ -8,7 +8,7 @@ import java.sql.Time;
 
 @Data
 @Entity
-@Table(name = "EntertainmentReservations")
+@Table(name = "Entertainment_Reservations")
 public class EntertainmentReservations {
 
     @Id

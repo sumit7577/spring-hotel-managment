@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 
 @Data
 @Entity
-@Table(name = "EntertainmentType")
+@Table(name = "Entertainment_Type")
 public class EntertainmentType {
 
     @Id

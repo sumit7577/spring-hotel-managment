@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 
 @Data
 @Entity
-@Table(name = "MenuType")
+@Table(name = "Menu_Type")
 public class MenuType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

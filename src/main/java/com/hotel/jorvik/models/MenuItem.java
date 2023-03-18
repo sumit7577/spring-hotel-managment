@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 
 @Data
 @Entity
-@Table(name = "MenuItem")
+@Table(name = "Menu_Item")
 public class MenuItem {
 
     @Id

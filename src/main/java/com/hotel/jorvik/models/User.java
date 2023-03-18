@@ -65,6 +65,9 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Token> tokens;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<EntertainmentReservations> entertainmentReservations;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
