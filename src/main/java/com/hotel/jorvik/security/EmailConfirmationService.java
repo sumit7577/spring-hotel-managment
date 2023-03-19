@@ -4,9 +4,9 @@ import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class EmailConfirmationService {
     private final JwtService jwtService;

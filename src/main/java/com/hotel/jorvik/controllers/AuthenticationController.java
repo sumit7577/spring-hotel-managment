@@ -29,6 +29,6 @@ public class AuthenticationController {
 
     @GetMapping("/email-confirmation/{token}")
     public ResponseEntity<String> confirmEmail(@PathVariable String token){
-    return ResponseEntity.ok(emailConfirmation.confirmEmail(token));
+        return ResponseEntity.ok(emailConfirmation.confirmEmail(token));
     }
 }

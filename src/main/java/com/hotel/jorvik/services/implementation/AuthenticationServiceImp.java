@@ -8,18 +8,14 @@ import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.repositories.RoleRepository;
 import com.hotel.jorvik.repositories.TokenRepository;
 import com.hotel.jorvik.repositories.UserRepository;
-import com.hotel.jorvik.security.AuthenticationRequest;
-import com.hotel.jorvik.security.AuthenticationResponse;
-import com.hotel.jorvik.security.JwtService;
-import com.hotel.jorvik.security.RegisterRequest;
+import com.hotel.jorvik.security.*;
 import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +27,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailSender emailSender;
+    @Value("${site.domain}")
+    private String domain;
 
     public AuthenticationResponse register(RegisterRequest request) {
 
@@ -50,9 +49,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
         User savedUser = userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String confirmationToken = jwtService.generateConfirmationToken(user);
-        System.out.println(confirmationToken);
-
-        // send email with confirmation token
+        String confirmEmailLink = domain + "/api/auth/email-confirmation/" + confirmationToken;
+        emailSender.sendEmail(
+                request.getEmail(),
+                "Confirm your email",
+                "Please, confirm your email by clicking on the link: " + confirmEmailLink);
 
         saveUserToken(savedUser, jwtToken, ETokenType.BEARER);
         saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
@@ -72,9 +73,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 .orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         jwtService.revokeAllUserTokens(user, ETokenType.BEARER);
-
         saveUserToken(user, jwtToken, ETokenType.BEARER);
-        System.out.println("HERE2");
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
