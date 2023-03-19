@@ -44,11 +44,18 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 request.getPhoneNumber(),
                 0,
                 passwordEncoder.encode(request.getPassword()),
+
                 defaultRole
         );
         User savedUser = userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
-        saveUserToken(savedUser, jwtToken);
+        String confirmationToken = jwtService.generateConfirmationToken(user);
+        System.out.println(confirmationToken);
+
+        // send email with confirmation token
+
+        saveUserToken(savedUser, jwtToken, ETokenType.BEARER);
+        saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -64,8 +71,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         String jwtToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        jwtService.revokeAllUserTokens(user, ETokenType.BEARER);
+
+        saveUserToken(user, jwtToken, ETokenType.BEARER);
+        System.out.println("HERE2");
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -76,22 +85,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 .orElseThrow();
     }
 
-    private void revokeAllUserTokens(User user){
-        List<Token> validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
-        if (validUserTokens.isEmpty())
-            return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
-    }
-
-    private void saveUserToken(User user, String jwtToken) {
+    private void saveUserToken(User user, String jwtToken, ETokenType tokenType) {
         Token token = Token.builder()
                 .user(user)
                 .token(jwtToken)
-                .tokenType(ETokenType.BEARER)
+                .tokenType(tokenType)
                 .expired(false)
                 .revoked(false)
                 .build();

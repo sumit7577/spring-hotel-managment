@@ -2,14 +2,12 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.security.AuthenticationRequest;
 import com.hotel.jorvik.security.AuthenticationResponse;
+import com.hotel.jorvik.security.EmailConfirmationService;
 import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import com.hotel.jorvik.security.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+    private final EmailConfirmationService emailConfirmation;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
@@ -24,7 +23,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthenticationRequest request){
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
         return ResponseEntity.ok(service.authenticate(request));
+    }
+
+    @GetMapping("/email-confirmation/{token}")
+    public ResponseEntity<String> confirmEmail(@PathVariable String token){
+    return ResponseEntity.ok(emailConfirmation.confirmEmail(token));
     }
 }
