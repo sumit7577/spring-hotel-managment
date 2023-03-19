@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -58,11 +57,17 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "enabled")
+    boolean enabled = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Token> tokens;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<EntertainmentReservations> entertainmentReservations;
@@ -117,6 +122,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

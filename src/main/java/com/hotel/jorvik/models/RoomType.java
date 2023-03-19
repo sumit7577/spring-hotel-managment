@@ -7,7 +7,7 @@ import lombok.NonNull;
 
 @Data
 @Entity
-@Table(name = "RoomType")
+@Table(name = "Room_Type")
 public class RoomType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

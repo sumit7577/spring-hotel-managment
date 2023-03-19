@@ -1,7 +1,9 @@
 package com.hotel.jorvik.security;
 
 import com.hotel.jorvik.repositories.UserRepository;
+import com.sendgrid.SendGrid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserRepository repository;
+    @Value("${sendgrid.api}")
+    private String sendGridAPIKey;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -41,4 +45,10 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public SendGrid sendGrid() {
+        return new SendGrid(sendGridAPIKey);
+    }
+
 }
