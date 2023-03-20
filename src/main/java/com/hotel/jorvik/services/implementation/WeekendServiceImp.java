@@ -43,8 +43,12 @@ public class WeekendServiceImp implements WeekendService {
         return true;
     }
 
-    public void deleteWeekendById(int id) {
+    public boolean deleteWeekendById(int id) {
+        Optional<Weekend> weekendToEdit = repository.findById(id);
+        if (weekendToEdit.isEmpty())
+            return false;
         repository.deleteById(id);
+        return true;
     }
 
     @Override

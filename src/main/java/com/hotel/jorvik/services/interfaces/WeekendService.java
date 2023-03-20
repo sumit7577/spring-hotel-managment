@@ -7,6 +7,6 @@ public interface WeekendService {
     Weekend getWeekendById(int id);
     Iterable<Weekend> getWeekendsByDate(Date date);
     boolean updateWeekendById(int id, Weekend weekend);
-    void deleteWeekendById(int id);
+    boolean deleteWeekendById(int id);
     void createWeekend(Weekend weekend);
 }
