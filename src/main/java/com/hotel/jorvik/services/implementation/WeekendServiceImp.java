@@ -25,7 +25,7 @@ public class WeekendServiceImp implements WeekendService {
     }
 
     @Override
-    public Iterable<Weekend> getWeekendsByDate(Date date) {
+    public Iterable<Weekend> getWeekendsByDate(String date) {
         return repository.findByDate(date);
     }
 

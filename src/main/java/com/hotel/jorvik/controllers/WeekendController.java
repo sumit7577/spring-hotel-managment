@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -34,7 +36,13 @@ public class WeekendController {
     }
 
     @GetMapping("/getByDate/{date}")
-    public ResponseEntity<Response> getByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public ResponseEntity<Response> getByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            formatter.parse(date);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>("Date format is not correct"));
+        }
         Iterable<Weekend> weekends = service.getWeekendsByDate(date);
         if (!weekends.iterator().hasNext()) {
             return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Weekends not found"));

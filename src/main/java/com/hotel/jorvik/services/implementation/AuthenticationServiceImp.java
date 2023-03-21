@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +32,16 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Value("${site.domain}")
     private String domain;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public void register(RegisterRequest request) {
 
+        userRepository.findByEmail(request.getEmail())
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("Email already exists");
+                });
+        userRepository.findByPhone(request.getPhoneNumber())
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("Phone already exists");
+                });
         Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow();
 
@@ -43,40 +52,37 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 request.getPhoneNumber(),
                 0,
                 passwordEncoder.encode(request.getPassword()),
-
                 defaultRole
         );
         User savedUser = userRepository.save(user);
-        String jwtToken = jwtService.generateToken(user);
         String confirmationToken = jwtService.generateConfirmationToken(user);
         String confirmEmailLink = domain + "/api/auth/email-confirmation/" + confirmationToken;
         emailSender.sendEmail(
                 request.getEmail(),
                 "Confirm your email",
                 "Please, confirm your email by clicking on the link: " + confirmEmailLink);
-
-        saveUserToken(savedUser, jwtToken, ETokenType.BEARER);
         saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        String jwtToken = jwtService.generateToken(user);
-        jwtService.revokeAllUserTokens(user, ETokenType.BEARER);
-        saveUserToken(user, jwtToken, ETokenType.BEARER);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
+            String jwtToken = jwtService.generateToken(user);
+            jwtService.revokeAllUserTokens(user, ETokenType.BEARER);
+            saveUserToken(user, jwtToken, ETokenType.BEARER);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Invalid email or password");
+        }
     }
 
     public Role getRole(ERole name) {

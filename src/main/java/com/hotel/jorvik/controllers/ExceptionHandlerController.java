@@ -6,6 +6,7 @@ import com.hotel.jorvik.response.Response;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,6 +26,16 @@ public class ExceptionHandlerController {
     public ResponseEntity<Response> handleConstraintViolation(ConstraintViolationException ex) {
         Set<String> violations = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(violations));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Response> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Response> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

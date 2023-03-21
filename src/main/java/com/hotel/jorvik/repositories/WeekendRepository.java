@@ -9,6 +9,6 @@ import java.util.Date;
 
 @Repository
 public interface WeekendRepository extends JpaRepository<Weekend, Integer> {
-    @Query(value = "SELECT * FROM weekend WHERE DATE(date_from) = :date", nativeQuery = true)
-    Iterable<Weekend> findByDate(@Param("date") Date date);
+    @Query(value = "SELECT * FROM weekend WHERE DATE(date_from) = DATE(:date)", nativeQuery = true)
+    Iterable<Weekend> findByDate(@Param("date") String date);
 }

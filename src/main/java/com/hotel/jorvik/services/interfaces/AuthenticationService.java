@@ -7,7 +7,7 @@ import com.hotel.jorvik.security.AuthenticationResponse;
 import com.hotel.jorvik.security.RegisterRequest;
 
 public interface AuthenticationService {
-    AuthenticationResponse register(RegisterRequest request);
+    void register(RegisterRequest request);
     AuthenticationResponse authenticate(AuthenticationRequest request);
     Role getRole(ERole name);
 }
