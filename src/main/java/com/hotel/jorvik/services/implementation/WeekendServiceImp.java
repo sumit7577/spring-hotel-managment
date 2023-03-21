@@ -25,7 +25,7 @@ public class WeekendServiceImp implements WeekendService {
     }
 
     @Override
-    public Iterable<Weekend> getWeekendsByDate(Date date) {
+    public Iterable<Weekend> getWeekendsByDate(String date) {
         return repository.findByDate(date);
     }
 
@@ -43,8 +43,12 @@ public class WeekendServiceImp implements WeekendService {
         return true;
     }
 
-    public void deleteWeekendById(int id) {
+    public boolean deleteWeekendById(int id) {
+        Optional<Weekend> weekendToEdit = repository.findById(id);
+        if (weekendToEdit.isEmpty())
+            return false;
         repository.deleteById(id);
+        return true;
     }
 
     @Override

@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,6 +84,11 @@ public class JwtService {
                 .orElse(false);
         boolean isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(jwt));
         return tokenDatabaseCheck && isValid;
+    }
+
+    public boolean isEmailToken(String jwt) {
+        Claims claims = extractAllClaims(jwt);
+        return claims.get("token_type", String.class).equals("email_confirmation");
     }
 
     private boolean isTokenExpired(String token) {

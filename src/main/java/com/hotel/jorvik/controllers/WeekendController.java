@@ -1,12 +1,19 @@
 package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.Weekend;
+import com.hotel.jorvik.response.ErrorResponse;
 import com.hotel.jorvik.services.interfaces.WeekendService;
+import com.hotel.jorvik.response.FailResponse;
+import com.hotel.jorvik.response.Response;
+import com.hotel.jorvik.response.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/weekend")
@@ -20,37 +27,48 @@ public class WeekendController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<Weekend> getWeekendById(@PathVariable Integer id){
+    public ResponseEntity<Response> getById(@PathVariable Integer id) {
         Weekend weekend = service.getWeekendById(id);
-        if (weekend == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(weekend);
+        if (weekend == null) {
+            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Weekend not found"));
+        }
+        return ResponseEntity.ok().body(new SuccessResponse<>(weekend));
     }
 
     @GetMapping("/getByDate/{date}")
-    public ResponseEntity<Iterable<Weekend>> getWeekendsByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date)  {
+    public ResponseEntity<Response> getByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            formatter.parse(date);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>("Date format is not correct"));
+        }
         Iterable<Weekend> weekends = service.getWeekendsByDate(date);
-        if (!weekends.iterator().hasNext())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(weekends);
+        if (!weekends.iterator().hasNext()) {
+            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Weekends not found"));
+        }
+        return ResponseEntity.ok().body(new SuccessResponse<>(weekends));
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Void> updateWeekendById(@PathVariable Integer id, @RequestBody Weekend weekend){
-        if (service.updateWeekendById(id, weekend))
-            return ResponseEntity.ok().build();
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Response> updateById(@PathVariable Integer id, @RequestBody Weekend weekend){
+        if (service.updateWeekendById(id, weekend)) {
+            return ResponseEntity.ok().body(new SuccessResponse<>(null));
+        }
+        return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse("Weekend not found"));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteWeekend(@PathVariable Integer id) {
-        service.deleteWeekendById(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Response> delete(@PathVariable Integer id) {
+        if (service.deleteWeekendById(id)) {
+            return ResponseEntity.ok().body(new SuccessResponse<>(null));
+        }
+        return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse("Weekend not found"));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Void> createWeekend(@RequestBody Weekend weekend) {
+    public ResponseEntity<Response> create(@RequestBody Weekend weekend) {
         service.createWeekend(weekend);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 }
