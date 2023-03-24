@@ -1,13 +1,15 @@
 package com.hotel.jorvik.services.interfaces;
 
 import com.hotel.jorvik.models.Role;
+import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.models.enums.ERole;
+import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.security.AuthenticationRequest;
 import com.hotel.jorvik.security.AuthenticationResponse;
 import com.hotel.jorvik.security.RegisterRequest;
 
 public interface AuthenticationService {
-    void register(RegisterRequest request);
+    AuthenticationResponse register(RegisterRequest request);
     AuthenticationResponse authenticate(AuthenticationRequest request);
     Role getRole(ERole name);
 }

@@ -32,8 +32,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Value("${site.domain}")
     private String domain;
 
-    public void register(RegisterRequest request) {
-
+    public AuthenticationResponse register(RegisterRequest request) {
         userRepository.findByEmail(request.getEmail())
                 .ifPresent(user -> {
                     throw new IllegalArgumentException("Email already exists");
@@ -55,13 +54,18 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 defaultRole
         );
         User savedUser = userRepository.save(user);
+        String jwtToken = jwtService.generateToken(user);
         String confirmationToken = jwtService.generateConfirmationToken(user);
         String confirmEmailLink = domain + "/api/auth/email-confirmation/" + confirmationToken;
         emailSender.sendEmail(
                 request.getEmail(),
                 "Confirm your email",
                 "Please, confirm your email by clicking on the link: " + confirmEmailLink);
-        saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
+        jwtService.saveUserToken(savedUser, jwtToken, ETokenType.BEARER);
+        jwtService.saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -73,10 +77,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
                     )
             );
             User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
+                    .orElseThrow();
             String jwtToken = jwtService.generateToken(user);
             jwtService.revokeAllUserTokens(user, ETokenType.BEARER);
-            saveUserToken(user, jwtToken, ETokenType.BEARER);
+            jwtService.saveUserToken(user, jwtToken, ETokenType.BEARER);
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
@@ -88,16 +92,5 @@ public class AuthenticationServiceImp implements AuthenticationService {
     public Role getRole(ERole name) {
         return roleRepository.findByName(name)
                 .orElseThrow();
-    }
-
-    private void saveUserToken(User user, String jwtToken, ETokenType tokenType) {
-        Token token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(tokenType)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
     }
 }

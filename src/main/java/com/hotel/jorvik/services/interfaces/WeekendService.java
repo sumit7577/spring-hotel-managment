@@ -1,12 +1,12 @@
 package com.hotel.jorvik.services.interfaces;
 
 import com.hotel.jorvik.models.Weekend;
-import java.util.Date;
 
 public interface WeekendService {
-    Weekend getWeekendById(int id);
-    Iterable<Weekend> getWeekendsByDate(String date);
-    boolean updateWeekendById(int id, Weekend weekend);
-    boolean deleteWeekendById(int id);
-    void createWeekend(Weekend weekend);
+    Weekend getById(int id);
+    Iterable<Weekend> getByDate(String date);
+    boolean updateById(int id, Weekend weekend);
+    boolean deleteById(int id);
+    void create(Weekend weekend);
 }
+

@@ -4,7 +4,7 @@ import com.hotel.jorvik.response.FailResponse;
 import com.hotel.jorvik.response.Response;
 import com.hotel.jorvik.response.SuccessResponse;
 import com.hotel.jorvik.security.AuthenticationRequest;
-import com.hotel.jorvik.security.EmailConfirmationService;
+import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import com.hotel.jorvik.security.RegisterRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,12 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-
     private final AuthenticationService service;
-    private final EmailConfirmationService emailConfirmation;
+    private final EmailService emailConfirmation;
 
     @PostMapping("/register")
     public ResponseEntity<Response> register(@RequestBody RegisterRequest request){
-        service.register(request);
-        return ResponseEntity.ok(new SuccessResponse<>(null));
+        return ResponseEntity.ok(new SuccessResponse<>(service.register(request)));
     }
 
     @PostMapping("/authenticate")

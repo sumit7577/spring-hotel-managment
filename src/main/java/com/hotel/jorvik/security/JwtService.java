@@ -111,4 +111,15 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public void saveUserToken(User user, String jwtToken, ETokenType tokenType) {
+        Token token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(tokenType)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
 }
