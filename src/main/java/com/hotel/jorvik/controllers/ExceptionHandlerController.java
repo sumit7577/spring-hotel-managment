@@ -6,15 +6,17 @@ import com.hotel.jorvik.response.Response;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -36,6 +38,11 @@ public class ExceptionHandlerController {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Response> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Response> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(UNAUTHORIZED).body(new FailResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

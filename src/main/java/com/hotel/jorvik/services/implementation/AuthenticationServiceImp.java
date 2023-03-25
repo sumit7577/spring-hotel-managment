@@ -1,14 +1,16 @@
 package com.hotel.jorvik.services.implementation;
 
+import com.hotel.jorvik.models.DTO.PasswordResetConfirmedRequest;
+import com.hotel.jorvik.models.DTO.PasswordResetRequest;
 import com.hotel.jorvik.models.Role;
-import com.hotel.jorvik.models.Token;
 import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.models.enums.ERole;
 import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.repositories.RoleRepository;
-import com.hotel.jorvik.repositories.TokenRepository;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.*;
+import com.hotel.jorvik.security.implementation.EmailSender;
+import com.hotel.jorvik.security.implementation.RegisterRequest;
 import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,22 +20,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImp implements AuthenticationService {
 
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailSender emailSender;
+    private final EmailService emailService;
     @Value("${site.domain}")
     private String domain;
 
-    public void register(RegisterRequest request) {
-
+    public AuthenticationResponse register(RegisterRequest request) {
         userRepository.findByEmail(request.getEmail())
                 .ifPresent(user -> {
                     throw new IllegalArgumentException("Email already exists");
@@ -55,13 +58,18 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 defaultRole
         );
         User savedUser = userRepository.save(user);
+        String jwtToken = jwtService.generateToken(user);
         String confirmationToken = jwtService.generateConfirmationToken(user);
         String confirmEmailLink = domain + "/api/auth/email-confirmation/" + confirmationToken;
         emailSender.sendEmail(
                 request.getEmail(),
                 "Confirm your email",
                 "Please, confirm your email by clicking on the link: " + confirmEmailLink);
-        saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
+        jwtService.saveUserToken(savedUser, jwtToken, ETokenType.BEARER);
+        jwtService.saveUserToken(savedUser, confirmationToken, ETokenType.CONFIRMATION);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -73,10 +81,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
                     )
             );
             User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
+                    .orElseThrow();
             String jwtToken = jwtService.generateToken(user);
             jwtService.revokeAllUserTokens(user, ETokenType.BEARER);
-            saveUserToken(user, jwtToken, ETokenType.BEARER);
+            jwtService.saveUserToken(user, jwtToken, ETokenType.BEARER);
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
@@ -90,14 +98,30 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 .orElseThrow();
     }
 
-    private void saveUserToken(User user, String jwtToken, ETokenType tokenType) {
-        Token token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(tokenType)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
+    @Override
+    public boolean resetPasswordRequest(PasswordResetRequest passwordResetRequest){
+        Optional<User> user = userRepository.findByEmail(passwordResetRequest.getEmail());
+        if (user.isEmpty()) {
+            return false;
+        }
+        emailService.sendResetPasswordEmail(user.get());
+        return true;
+    }
+
+    @Override
+    public boolean resetPassword(String token, PasswordResetConfirmedRequest passwordRequest){
+        final String userEmail;
+        userEmail = jwtService.extractUsername(token);
+        if (userEmail == null) {
+            return false;
+        }
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow();
+        if (jwtService.isTokenValid(token, user) && jwtService.isPasswordToken(token)) {
+            jwtService.revokeAllUserTokens(user, ETokenType.RESET_PASSWORD);
+            user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
+            userRepository.save(user);
+        }
+        return true;
     }
 }

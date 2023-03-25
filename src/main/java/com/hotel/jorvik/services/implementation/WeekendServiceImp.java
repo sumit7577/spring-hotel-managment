@@ -3,37 +3,33 @@ package com.hotel.jorvik.services.implementation;
 import com.hotel.jorvik.models.Weekend;
 import com.hotel.jorvik.repositories.WeekendRepository;
 import com.hotel.jorvik.services.interfaces.WeekendService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class WeekendServiceImp implements WeekendService {
 
     private final WeekendRepository repository;
 
-    @Autowired
-    public WeekendServiceImp(WeekendRepository repository) {
-        this.repository = repository;
-    }
-
     @Override
-    public Weekend getWeekendById(int id){
+    public Weekend getById(int id){
         Optional<Weekend> weekend = repository.findById(id);
         return weekend.orElse(null);
     }
 
     @Override
-    public Iterable<Weekend> getWeekendsByDate(String date) {
+    public Iterable<Weekend> getByDate(String date) {
         return repository.findByDate(date);
     }
 
     @Override
-    public boolean updateWeekendById(int id, Weekend newWeekend) {
+    public boolean updateById(int id, Weekend newWeekend) {
         Optional<Weekend> weekendToEdit = repository.findById(id);
-        if (weekendToEdit.isEmpty())
+        if (weekendToEdit.isEmpty()) {
             return false;
+        }
         Weekend weekend = weekendToEdit.get();
         weekend.setPlace(newWeekend.getPlace());
         weekend.setDescription(newWeekend.getDescription());
@@ -43,7 +39,7 @@ public class WeekendServiceImp implements WeekendService {
         return true;
     }
 
-    public boolean deleteWeekendById(int id) {
+    public boolean deleteById(int id) {
         Optional<Weekend> weekendToEdit = repository.findById(id);
         if (weekendToEdit.isEmpty())
             return false;
@@ -52,7 +48,7 @@ public class WeekendServiceImp implements WeekendService {
     }
 
     @Override
-    public void createWeekend(Weekend weekend) {
+    public void create(Weekend weekend) {
         repository.save(weekend);
     }
 }
