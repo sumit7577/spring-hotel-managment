@@ -1,14 +1,16 @@
 package com.hotel.jorvik.services.implementation;
 
+import com.hotel.jorvik.models.DTO.PasswordResetConfirmedRequest;
+import com.hotel.jorvik.models.DTO.PasswordResetRequest;
 import com.hotel.jorvik.models.Role;
-import com.hotel.jorvik.models.Token;
 import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.models.enums.ERole;
 import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.repositories.RoleRepository;
-import com.hotel.jorvik.repositories.TokenRepository;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.*;
+import com.hotel.jorvik.security.implementation.EmailSender;
+import com.hotel.jorvik.security.implementation.RegisterRequest;
 import com.hotel.jorvik.services.interfaces.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +20,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImp implements AuthenticationService {
 
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailSender emailSender;
+    private final EmailService emailService;
     @Value("${site.domain}")
     private String domain;
 
@@ -92,5 +96,32 @@ public class AuthenticationServiceImp implements AuthenticationService {
     public Role getRole(ERole name) {
         return roleRepository.findByName(name)
                 .orElseThrow();
+    }
+
+    @Override
+    public boolean resetPasswordRequest(PasswordResetRequest passwordResetRequest){
+        Optional<User> user = userRepository.findByEmail(passwordResetRequest.getEmail());
+        if (user.isEmpty()) {
+            return false;
+        }
+        emailService.sendResetPasswordEmail(user.get());
+        return true;
+    }
+
+    @Override
+    public boolean resetPassword(String token, PasswordResetConfirmedRequest passwordRequest){
+        final String userEmail;
+        userEmail = jwtService.extractUsername(token);
+        if (userEmail == null) {
+            return false;
+        }
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow();
+        if (jwtService.isTokenValid(token, user) && jwtService.isPasswordToken(token)) {
+            jwtService.revokeAllUserTokens(user, ETokenType.RESET_PASSWORD);
+            user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
+            userRepository.save(user);
+        }
+        return true;
     }
 }

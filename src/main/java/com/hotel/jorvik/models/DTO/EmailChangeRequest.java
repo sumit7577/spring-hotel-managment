@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 @Data
-public class EmailChangeDTO {
+public class EmailChangeRequest {
     @Email
     private String email;
 }

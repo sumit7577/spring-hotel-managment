@@ -1,16 +1,17 @@
 package com.hotel.jorvik.services.implementation;
 
-import com.hotel.jorvik.models.DTO.EmailChangeDTO;
-import com.hotel.jorvik.models.DTO.PasswordChangeDTO;
-import com.hotel.jorvik.models.DTO.UserDTO;
+import com.hotel.jorvik.models.DTO.*;
 import com.hotel.jorvik.models.User;
+import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.EmailService;
+import com.hotel.jorvik.security.JwtService;
 import com.hotel.jorvik.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -41,29 +42,13 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public boolean updateById(int id, UserDTO newUser) {
-        Optional<User> userToEdit = repository.findById(id);
-        if (userToEdit.isEmpty()) {
-            return false;
-        }
-        User user = userToEdit.get();
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setEmail(newUser.getEmail());
-        user.setPhone(newUser.getPhone());
-        user.setDiscount(newUser.getDiscount());
-        repository.save(user);
-        return true;
-    }
-
-    @Override
-    public boolean updatePassword(PasswordChangeDTO passwordChangeDTO) {
+    public boolean updatePassword(PasswordChangeRequest passwordChangeRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             email,
-                            passwordChangeDTO.getPassword()
+                            passwordChangeRequest.getPassword()
                     )
             );
         }catch (Exception e){
@@ -73,14 +58,14 @@ public class UserServiceImp implements UserService {
         if (user.isEmpty()) {
             return false;
         }
-        user.get().setPassword(passwordEncoder.encode(passwordChangeDTO.getNewPassword()));
+        user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
         repository.save(user.get());
         return true;
     }
 
     @Override
-    public boolean updateEmail(EmailChangeDTO emailChangeDTO) {
-        repository.findByEmail(emailChangeDTO.getEmail())
+    public boolean updateEmail(EmailChangeRequest emailChangeRequest) {
+        repository.findByEmail(emailChangeRequest.getEmail())
                 .ifPresent(user -> {
                     throw new IllegalArgumentException("Email already exists");
                 });
@@ -90,7 +75,7 @@ public class UserServiceImp implements UserService {
         if (user.isEmpty()) {
             return false;
         }
-        user.get().setEmail(emailChangeDTO.getEmail());
+        user.get().setEmail(emailChangeRequest.getEmail());
         user.get().setConfirmed(false);
         emailService.sendConfirmationEmail(user.get());
         repository.save(user.get());
@@ -105,6 +90,29 @@ public class UserServiceImp implements UserService {
             return false;
         }
         emailService.sendConfirmationEmail(user.get());
+        return true;
+    }
+
+    @Override
+    public boolean updatePhone(PhoneChangeRequest phoneChangeRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = repository.findByEmail(email);
+        if (user.isEmpty()) {
+            return false;
+        }
+        user.get().setPhone(phoneChangeRequest.getPhone());
+        repository.save(user.get());
+        return true;
+    }
+
+    @Override
+    public boolean updateDiscount(int id, DiscountChangeRequest discountChangeRequest) {
+        Optional<User> user = repository.findById(id);
+        if (user.isEmpty()) {
+            return false;
+        }
+        user.get().setDiscount(discountChangeRequest.getDiscount());
+        repository.save(user.get());
         return true;
     }
 }

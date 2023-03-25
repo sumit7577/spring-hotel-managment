@@ -1,4 +1,4 @@
-package com.hotel.jorvik.security;
+package com.hotel.jorvik.security.implementation;
 
 import com.hotel.jorvik.models.Token;
 import com.hotel.jorvik.repositories.TokenRepository;

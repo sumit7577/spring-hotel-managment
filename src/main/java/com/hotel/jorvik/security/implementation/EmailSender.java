@@ -1,4 +1,4 @@
-package com.hotel.jorvik.security;
+package com.hotel.jorvik.security.implementation;
 
 import com.sendgrid.Method;
 import com.sendgrid.Request;

@@ -1,5 +1,6 @@
-package com.hotel.jorvik.security;
+package com.hotel.jorvik.security.implementation;
 
+import com.hotel.jorvik.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
