@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -57,8 +59,8 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "enabled")
-    boolean confirmed = false;
+    @Column(name = "verified")
+    Timestamp verified;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
@@ -86,6 +88,7 @@ public class User implements UserDetails {
         this.discount = discount;
         this.password = password;
         this.roles.add(role);
+        this.verified = null;
     }
 
     @Override

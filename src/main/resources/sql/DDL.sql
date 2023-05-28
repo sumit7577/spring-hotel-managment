@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-05-27 09:16:14.792
+-- Last modification date: 2023-05-28 11:20:06.396
 
 -- tables
 -- Table: Cleaning_History
@@ -139,7 +139,7 @@ CREATE TABLE User (
                       phone varchar(50) NOT NULL,
                       discount int NOT NULL,
                       password varchar(500) NOT NULL,
-                      enabled bool NOT NULL,
+                      verified timestamp NULL,
                       CONSTRAINT User_pk PRIMARY KEY (id)
 );
 

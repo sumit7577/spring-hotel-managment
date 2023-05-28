@@ -100,7 +100,7 @@ public class JwtServiceImp implements JwtService {
     public boolean isTokenValid(String jwt, UserDetails userDetails) {
         final String username = extractUsername(jwt);
         boolean tokenDatabaseCheck = tokenRepository
-                .findByToken(jwt).isEmpty();
+                .findByToken(jwt).isPresent();
         boolean isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(jwt));
         return tokenDatabaseCheck && isValid;
     }

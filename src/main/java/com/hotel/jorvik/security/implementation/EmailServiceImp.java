@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImp implements EmailService {
@@ -27,7 +29,7 @@ public class EmailServiceImp implements EmailService {
                 user.getEmail(),
                 "Confirm your email",
                 "Please, confirm your email by clicking on the link: " + confirmEmailLink);
-        jwtService.saveUserToken(user, confirmationToken, ETokenType.CONFIRMATION);
+        jwtService.saveUserToken(user, confirmationToken, ETokenType.EMAIL_CONFIRMATION);
     }
 
     @Override
@@ -41,8 +43,8 @@ public class EmailServiceImp implements EmailService {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow();
             if (jwtService.isTokenValid(token, user) && jwtService.isEmailToken(token)) {
-                jwtService.revokeAllUserTokens(user, ETokenType.CONFIRMATION);
-                user.setConfirmed(true);
+                jwtService.revokeAllUserTokens(user, ETokenType.EMAIL_CONFIRMATION);
+                user.setVerified(new Timestamp(System.currentTimeMillis()));
                 userRepository.save(user);
             }
         } else {

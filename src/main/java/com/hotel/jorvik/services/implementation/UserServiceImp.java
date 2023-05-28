@@ -52,7 +52,6 @@ public class UserServiceImp implements UserService {
         if (!tools.isValidPassword(passwordChangeRequest.getNewPassword())) {
             throw new IllegalArgumentException("Password is not valid");
         }
-        // Handle exception if password is not correct
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         email,
@@ -80,7 +79,7 @@ public class UserServiceImp implements UserService {
             throw new NoSuchElementException("User not found");
         }
         user.get().setEmail(emailChangeRequest.getEmail());
-        user.get().setConfirmed(false);
+        user.get().setVerified(null);
         emailService.sendConfirmationEmail(user.get());
         repository.save(user.get());
     }

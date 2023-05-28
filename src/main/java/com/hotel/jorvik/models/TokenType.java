@@ -10,7 +10,7 @@ public class TokenType {
 
     public enum ETokenType {
         ACCESS,
-        CONFIRMATION,
+        EMAIL_CONFIRMATION,
         RESET_PASSWORD
     }
 

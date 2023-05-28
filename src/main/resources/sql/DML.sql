@@ -8,7 +8,7 @@ INSERT INTO Role (name) VALUES
 -- Token
 INSERT INTO Token_Type (type) VALUES
                                   ('ACCESS'),
-                                  ('CONFIRMATION'),
+                                  ('EMAIL_CONFIRMATION'),
                                   ('RESET_PASSWORD');
 
 -- Room types
@@ -136,11 +136,11 @@ INSERT INTO Payment (date, amount) VALUES
 
 -- User
 INSERT INTO User (first_name, last_name, email, phone, discount, password, enabled) VALUES
-                                                                                        ('John', 'Doe', 'johndoe@example.com', '+48859371835', 0, 'abf67e3fa8b1d3c5', true),
-                                                                                        ('Robert', 'Johnson', 'robertjohnson@example.com', '+48768547568', 0, 'gererherh52eewef4y', true),
-                                                                                        ('Amanda', 'Brown', 'amandabrown@example.com', '+48756321458', 0, 'c8b2a1e5f6d9', true),
-                                                                                        ('William', 'Davis', 'williamdavis@example.com', '+48536945856', 20, 'e9d7c1b8a2f6', true),
-                                                                                        ('Laura', 'Garcia', 'lauragarcia@example.com', '+48578632154', 0, 'b8a1c5d9e3f6', true);
+                                                                                        ('John', 'Doe', 'johndoe@example.com', '+48859371835', 0, 'abf67e3fa8b1d3c5', null),
+                                                                                        ('Robert', 'Johnson', 'robertjohnson@example.com', '+48768547568', 0, 'gererherh52eewef4y', null),
+                                                                                        ('Amanda', 'Brown', 'amandabrown@example.com', '+48756321458', 0, 'c8b2a1e5f6d9', null),
+                                                                                        ('William', 'Davis', 'williamdavis@example.com', '+48536945856', 20, 'e9d7c1b8a2f6', null),
+                                                                                        ('Laura', 'Garcia', 'lauragarcia@example.com', '+48578632154', 0, 'b8a1c5d9e3f6', null);
 
 -- User roles
 INSERT INTO User_Role (user_id, role_id) VALUES
