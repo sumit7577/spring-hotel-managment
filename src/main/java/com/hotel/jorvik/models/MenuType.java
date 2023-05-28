@@ -1,6 +1,5 @@
 package com.hotel.jorvik.models;
 
-import com.hotel.jorvik.models.enums.EMenu;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
@@ -9,8 +8,16 @@ import jakarta.validation.constraints.*;
 @Entity
 @Table(name = "Menu_Type")
 public class MenuType {
+
+    enum EMenu {
+        BREAKFAST,
+        LUNCH,
+        DINNER
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int ID;
 
     @Enumerated(EnumType.STRING)

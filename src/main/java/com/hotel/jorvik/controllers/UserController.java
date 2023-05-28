@@ -5,7 +5,7 @@ import com.hotel.jorvik.response.FailResponse;
 import com.hotel.jorvik.response.Response;
 import com.hotel.jorvik.response.SuccessResponse;
 import com.hotel.jorvik.security.SecurityTools;
-import com.hotel.jorvik.services.interfaces.UserService;
+import com.hotel.jorvik.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

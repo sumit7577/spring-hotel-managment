@@ -1,183 +1,229 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-03-12 13:01:11.737
+-- Last modification date: 2023-05-27 09:16:14.792
 
 -- tables
+-- Table: Cleaning_History
+CREATE TABLE Cleaning_History (
+                                  id int NOT NULL AUTO_INCREMENT,
+                                  room_id int NOT NULL,
+                                  requested_at timestamp NOT NULL,
+                                  done_at timestamp NULL,
+                                  CONSTRAINT Cleaning_History_pk PRIMARY KEY (id)
+);
+
 -- Table: Dish
 CREATE TABLE Dish (
-                      ID int NOT NULL AUTO_INCREMENT,
+                      id int NOT NULL AUTO_INCREMENT,
                       name varchar(50) NOT NULL,
                       description varchar(500) NOT NULL,
                       photo_directory varchar(100) NOT NULL,
-                      CONSTRAINT Dish_pk PRIMARY KEY (ID)
+                      CONSTRAINT Dish_pk PRIMARY KEY (id)
 );
 
 -- Table: Entertainment
 CREATE TABLE Entertainment (
-                               ID int NOT NULL AUTO_INCREMENT,
+                               id int NOT NULL AUTO_INCREMENT,
+                               lock_code int NULL,
                                description varchar(100) NOT NULL,
-                               entertainmentType_ID int NOT NULL,
-                               CONSTRAINT Entertainment_pk PRIMARY KEY (ID)
+                               entertainment_type_id int NOT NULL,
+                               CONSTRAINT Entertainment_pk PRIMARY KEY (id)
 );
 
--- Table: EntertainmentReservations
-CREATE TABLE EntertainmentReservations (
-                                           ID int NOT NULL AUTO_INCREMENT,
-                                           date date NOT NULL,
-                                           time time NOT NULL,
-                                           user_ID int NOT NULL,
-                                           entertainment_ID int NOT NULL,
-                                           payment_ID int NOT NULL,
-                                           CONSTRAINT EntertainmentReservations_pk PRIMARY KEY (ID)
+-- Table: Entertainment_Reservation
+CREATE TABLE Entertainment_Reservation (
+                                           id int NOT NULL AUTO_INCREMENT,
+                                           date timestamp NOT NULL,
+                                           user_id int NOT NULL,
+                                           entertainment_id int NOT NULL,
+                                           payment_id int NOT NULL,
+                                           CONSTRAINT Entertainment_Reservation_pk PRIMARY KEY (id)
 );
 
--- Table: EntertainmentType
-CREATE TABLE EntertainmentType (
-                                   ID int NOT NULL AUTO_INCREMENT,
-                                   name varchar(50) NOT NULL,
-                                   price int NOT NULL,
-                                   CONSTRAINT EntertainmentType_pk PRIMARY KEY (ID)
+-- Table: Entertainment_Type
+CREATE TABLE Entertainment_Type (
+                                    id int NOT NULL AUTO_INCREMENT,
+                                    name varchar(50) NOT NULL,
+                                    price int NOT NULL,
+                                    CONSTRAINT Entertainment_Type_pk PRIMARY KEY (id)
 );
 
--- Table: MenuItem
-CREATE TABLE MenuItem (
-                          ID int NOT NULL AUTO_INCREMENT,
-                          menu_date date NOT NULL,
-                          dish_ID int NOT NULL,
-                          menuType_ID int NOT NULL,
-                          CONSTRAINT MenuItem_pk PRIMARY KEY (ID)
+-- Table: Menu_Item
+CREATE TABLE Menu_Item (
+                           id int NOT NULL AUTO_INCREMENT,
+                           menu_date date NOT NULL,
+                           dish_id int NOT NULL,
+                           menu_type_id int NOT NULL,
+                           CONSTRAINT Menu_Item_pk PRIMARY KEY (id)
 );
 
--- Table: MenuType
-CREATE TABLE MenuType (
-                          ID int NOT NULL AUTO_INCREMENT,
-                          name varchar(50) NOT NULL,
-                          CONSTRAINT MenuType_pk PRIMARY KEY (ID)
+-- Table: Menu_Type
+CREATE TABLE Menu_Type (
+                           id int NOT NULL AUTO_INCREMENT,
+                           name varchar(50) NOT NULL,
+                           CONSTRAINT Menu_Type_pk PRIMARY KEY (id)
 );
 
 -- Table: Payment
 CREATE TABLE Payment (
-                         ID int NOT NULL AUTO_INCREMENT,
+                         id int NOT NULL AUTO_INCREMENT,
                          date timestamp NOT NULL,
                          amount int NOT NULL,
-                         CONSTRAINT Payment_pk PRIMARY KEY (ID)
+                         CONSTRAINT Payment_pk PRIMARY KEY (id)
+);
+
+-- Table: Place
+CREATE TABLE Place (
+                       id int NOT NULL AUTO_INCREMENT,
+                       place varchar(100) NOT NULL,
+                       CONSTRAINT Place_pk PRIMARY KEY (id)
 );
 
 -- Table: Role
 CREATE TABLE Role (
-                      ID int NOT NULL AUTO_INCREMENT,
-                      name varchar(25) NOT NULL,
-                      CONSTRAINT Role_pk PRIMARY KEY (ID)
+                      id int NOT NULL AUTO_INCREMENT,
+                      name varchar(50) NOT NULL,
+                      CONSTRAINT Role_pk PRIMARY KEY (id)
 );
 
 -- Table: Room
 CREATE TABLE Room (
+                      id int NOT NULL AUTO_INCREMENT,
                       number int NOT NULL,
+                      room_type_id int NOT NULL,
                       access_code int NOT NULL,
-                      floor int NOT NULL,
-                      roomType_ID int NOT NULL,
-                      cleaning_request timestamp NULL,
-                      CONSTRAINT Room_pk PRIMARY KEY (number)
+                      CONSTRAINT Room_pk PRIMARY KEY (id)
 );
 
--- Table: RoomReservations
-CREATE TABLE RoomReservations (
-                                  ID int NOT NULL AUTO_INCREMENT,
+-- Table: Room_Reservation
+CREATE TABLE Room_Reservation (
+                                  id int NOT NULL AUTO_INCREMENT,
                                   from_date date NOT NULL,
                                   to_date date NOT NULL,
-                                  room_number int NOT NULL,
-                                  user_ID int NOT NULL,
-                                  payment_ID int NULL,
-                                  CONSTRAINT RoomReservations_pk PRIMARY KEY (ID)
+                                  user_id int NOT NULL,
+                                  room_id int NOT NULL,
+                                  payment_id int NULL,
+                                  CONSTRAINT Room_Reservation_pk PRIMARY KEY (id)
 );
 
--- Table: RoomType
-CREATE TABLE RoomType (
-                          ID int NOT NULL AUTO_INCREMENT,
-                          room_occupancy int NOT NULL,
-                          price int NOT NULL,
-                          room_area int NOT NULL,
-                          CONSTRAINT RoomType_pk PRIMARY KEY (ID)
+-- Table: Room_Type
+CREATE TABLE Room_Type (
+                           id int NOT NULL AUTO_INCREMENT,
+                           room_occupancy int NOT NULL,
+                           price int NOT NULL,
+                           room_area int NOT NULL,
+                           CONSTRAINT Room_Type_pk PRIMARY KEY (id)
+);
+
+-- Table: Token
+CREATE TABLE Token (
+                       id int NOT NULL AUTO_INCREMENT,
+                       token varchar(500) NOT NULL,
+                       user_id int NOT NULL,
+                       token_type_id int NOT NULL,
+                       CONSTRAINT Token_pk PRIMARY KEY (id)
+);
+
+-- Table: Token_Type
+CREATE TABLE Token_Type (
+                            id int NOT NULL AUTO_INCREMENT,
+                            type varchar(25) NOT NULL,
+                            CONSTRAINT Token_Type_pk PRIMARY KEY (id)
 );
 
 -- Table: User
 CREATE TABLE User (
-                      ID int NOT NULL AUTO_INCREMENT,
+                      id int NOT NULL AUTO_INCREMENT,
                       first_name varchar(30) NOT NULL,
                       last_name varchar(30) NOT NULL,
                       email varchar(50) NOT NULL,
                       phone varchar(50) NOT NULL,
                       discount int NOT NULL,
-                      hash varchar(500) NOT NULL,
-                      salt varchar(500) NOT NULL,
-                      refresh_token varchar(500) NOT NULL,
-                      CONSTRAINT User_pk PRIMARY KEY (ID)
+                      password varchar(500) NOT NULL,
+                      enabled bool NOT NULL,
+                      CONSTRAINT User_pk PRIMARY KEY (id)
 );
 
--- Table: UserRoles
-CREATE TABLE UserRoles (
-                           role_ID int NOT NULL,
-                           user_ID int NOT NULL,
-                           CONSTRAINT UserRoles_pk PRIMARY KEY (role_ID,user_ID)
+-- Table: User_Role
+CREATE TABLE User_Role (
+                           user_id int NOT NULL AUTO_INCREMENT,
+                           role_id int NOT NULL,
+                           CONSTRAINT User_Role_pk PRIMARY KEY (user_id,role_id)
 );
 
 -- Table: Weekend
 CREATE TABLE Weekend (
-                         ID int NOT NULL AUTO_INCREMENT,
-                         place varchar(50) NOT NULL,
+                         id int NOT NULL AUTO_INCREMENT,
                          description varchar(500) NOT NULL,
                          date_from timestamp NOT NULL,
                          date_to timestamp NOT NULL,
-                         CONSTRAINT Weekend_pk PRIMARY KEY (ID)
+                         place_id int NOT NULL,
+                         CONSTRAINT Weekend_pk PRIMARY KEY (id)
 );
 
 -- foreign keys
--- Reference: EntertainmentReservation_Entertainment (table: EntertainmentReservations)
-ALTER TABLE EntertainmentReservations ADD CONSTRAINT EntertainmentReservation_Entertainment FOREIGN KEY EntertainmentReservation_Entertainment (entertainment_ID)
-    REFERENCES Entertainment (ID);
+-- Reference: Cleaning_Request_Room (table: Cleaning_History)
+ALTER TABLE Cleaning_History ADD CONSTRAINT Cleaning_Request_Room FOREIGN KEY Cleaning_Request_Room (room_id)
+    REFERENCES Room (id);
 
--- Reference: EntertainmentReservation_Payment (table: EntertainmentReservations)
-ALTER TABLE EntertainmentReservations ADD CONSTRAINT EntertainmentReservation_Payment FOREIGN KEY EntertainmentReservation_Payment (payment_ID)
-    REFERENCES Payment (ID);
+-- Reference: EntertainmentReservation_Entertainment (table: Entertainment_Reservation)
+ALTER TABLE Entertainment_Reservation ADD CONSTRAINT EntertainmentReservation_Entertainment FOREIGN KEY EntertainmentReservation_Entertainment (entertainment_id)
+    REFERENCES Entertainment (id);
 
--- Reference: EntertainmentReservation_User (table: EntertainmentReservations)
-ALTER TABLE EntertainmentReservations ADD CONSTRAINT EntertainmentReservation_User FOREIGN KEY EntertainmentReservation_User (user_ID)
-    REFERENCES User (ID);
+-- Reference: EntertainmentReservation_Payment (table: Entertainment_Reservation)
+ALTER TABLE Entertainment_Reservation ADD CONSTRAINT EntertainmentReservation_Payment FOREIGN KEY EntertainmentReservation_Payment (payment_id)
+    REFERENCES Payment (id);
+
+-- Reference: EntertainmentReservation_User (table: Entertainment_Reservation)
+ALTER TABLE Entertainment_Reservation ADD CONSTRAINT EntertainmentReservation_User FOREIGN KEY EntertainmentReservation_User (user_id)
+    REFERENCES User (id);
 
 -- Reference: Entertainment_EntertainmentType (table: Entertainment)
-ALTER TABLE Entertainment ADD CONSTRAINT Entertainment_EntertainmentType FOREIGN KEY Entertainment_EntertainmentType (entertainmentType_ID)
-    REFERENCES EntertainmentType (ID);
+ALTER TABLE Entertainment ADD CONSTRAINT Entertainment_EntertainmentType FOREIGN KEY Entertainment_EntertainmentType (entertainment_type_id)
+    REFERENCES Entertainment_Type (id);
 
--- Reference: MenuItem_Dish (table: MenuItem)
-ALTER TABLE MenuItem ADD CONSTRAINT MenuItem_Dish FOREIGN KEY MenuItem_Dish (dish_ID)
-    REFERENCES Dish (ID);
+-- Reference: MenuItem_Dish (table: Menu_Item)
+ALTER TABLE Menu_Item ADD CONSTRAINT MenuItem_Dish FOREIGN KEY MenuItem_Dish (dish_id)
+    REFERENCES Dish (id);
 
--- Reference: MenuItem_MenuType (table: MenuItem)
-ALTER TABLE MenuItem ADD CONSTRAINT MenuItem_MenuType FOREIGN KEY MenuItem_MenuType (menuType_ID)
-    REFERENCES MenuType (ID);
+-- Reference: MenuItem_MenuType (table: Menu_Item)
+ALTER TABLE Menu_Item ADD CONSTRAINT MenuItem_MenuType FOREIGN KEY MenuItem_MenuType (menu_type_id)
+    REFERENCES Menu_Type (id);
 
--- Reference: RoomReservation_Payment (table: RoomReservations)
-ALTER TABLE RoomReservations ADD CONSTRAINT RoomReservation_Payment FOREIGN KEY RoomReservation_Payment (payment_ID)
-    REFERENCES Payment (ID);
+-- Reference: RoomReservation_Payment (table: Room_Reservation)
+ALTER TABLE Room_Reservation ADD CONSTRAINT RoomReservation_Payment FOREIGN KEY RoomReservation_Payment (payment_id)
+    REFERENCES Payment (id);
 
--- Reference: RoomReservation_Room (table: RoomReservations)
-ALTER TABLE RoomReservations ADD CONSTRAINT RoomReservation_Room FOREIGN KEY RoomReservation_Room (room_number)
-    REFERENCES Room (number);
+-- Reference: RoomReservation_User (table: Room_Reservation)
+ALTER TABLE Room_Reservation ADD CONSTRAINT RoomReservation_User FOREIGN KEY RoomReservation_User (user_id)
+    REFERENCES User (id);
 
--- Reference: RoomReservation_User (table: RoomReservations)
-ALTER TABLE RoomReservations ADD CONSTRAINT RoomReservation_User FOREIGN KEY RoomReservation_User (user_ID)
-    REFERENCES User (ID);
+-- Reference: Room_Reservations_Room (table: Room_Reservation)
+ALTER TABLE Room_Reservation ADD CONSTRAINT Room_Reservations_Room FOREIGN KEY Room_Reservations_Room (room_id)
+    REFERENCES Room (id);
 
 -- Reference: Room_RoomType (table: Room)
-ALTER TABLE Room ADD CONSTRAINT Room_RoomType FOREIGN KEY Room_RoomType (roomType_ID)
-    REFERENCES RoomType (ID);
+ALTER TABLE Room ADD CONSTRAINT Room_RoomType FOREIGN KEY Room_RoomType (room_type_id)
+    REFERENCES Room_Type (id);
 
--- Reference: UserRoles_Role (table: UserRoles)
-ALTER TABLE UserRoles ADD CONSTRAINT UserRoles_Role FOREIGN KEY UserRoles_Role (role_ID)
-    REFERENCES Role (ID);
+-- Reference: Token_Token_Type (table: Token)
+ALTER TABLE Token ADD CONSTRAINT Token_Token_Type FOREIGN KEY Token_Token_Type (token_type_id)
+    REFERENCES Token_Type (id);
 
--- Reference: UserRoles_User (table: UserRoles)
-ALTER TABLE UserRoles ADD CONSTRAINT UserRoles_User FOREIGN KEY UserRoles_User (user_ID)
-    REFERENCES User (ID);
+-- Reference: Token_User (table: Token)
+ALTER TABLE Token ADD CONSTRAINT Token_User FOREIGN KEY Token_User (user_id)
+    REFERENCES User (id);
+
+-- Reference: UserRole_Role (table: User_Role)
+ALTER TABLE User_Role ADD CONSTRAINT UserRole_Role FOREIGN KEY UserRole_Role (role_id)
+    REFERENCES Role (id);
+
+-- Reference: UserRole_User (table: User_Role)
+ALTER TABLE User_Role ADD CONSTRAINT UserRole_User FOREIGN KEY UserRole_User (user_id)
+    REFERENCES User (id);
+
+-- Reference: Weekend_Place (table: Weekend)
+ALTER TABLE Weekend ADD CONSTRAINT Weekend_Place FOREIGN KEY Weekend_Place (place_id)
+    REFERENCES Place (id);
 
 -- End of file.
 

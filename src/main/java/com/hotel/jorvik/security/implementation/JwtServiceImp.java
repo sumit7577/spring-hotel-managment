@@ -1,9 +1,11 @@
 package com.hotel.jorvik.security.implementation;
 
 import com.hotel.jorvik.models.Token;
+import com.hotel.jorvik.models.TokenType;
 import com.hotel.jorvik.models.User;
-import com.hotel.jorvik.models.enums.ETokenType;
+import com.hotel.jorvik.models.TokenType.ETokenType;
 import com.hotel.jorvik.repositories.TokenRepository;
+import com.hotel.jorvik.repositories.TokenTypeRepository;
 import com.hotel.jorvik.security.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,6 +28,7 @@ import java.util.function.Function;
 public class JwtServiceImp implements JwtService {
 
     private final TokenRepository tokenRepository;
+    private final TokenTypeRepository tokenTypeRepository;
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
@@ -86,33 +89,30 @@ public class JwtServiceImp implements JwtService {
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {
-            if (token.getTokenType().equals(tokenType)) {
-                token.setExpired(true);
-                token.setRevoked(true);
+            if (token.getTokenType().getType().equals(tokenType)) {
+                tokenRepository.delete(token);
             }
         });
-        tokenRepository.saveAll(validUserTokens);
+        //tokenRepository.saveAll(validUserTokens);
     }
 
     @Override
     public boolean isTokenValid(String jwt, UserDetails userDetails) {
         final String username = extractUsername(jwt);
         boolean tokenDatabaseCheck = tokenRepository
-                .findByToken(jwt)
-                .map(token -> !token.isRevoked() && !token.isExpired())
-                .orElse(false);
+                .findByToken(jwt).isEmpty();
         boolean isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(jwt));
         return tokenDatabaseCheck && isValid;
     }
 
     @Override
     public void saveUserToken(User user, String jwtToken, ETokenType tokenType) {
+        TokenType type = tokenTypeRepository.findByType(tokenType)
+                .orElseThrow();
         Token token = Token.builder()
                 .user(user)
                 .token(jwtToken)
-                .tokenType(tokenType)
-                .expired(false)
-                .revoked(false)
+                .tokenType(type)
                 .build();
         tokenRepository.save(token);
     }

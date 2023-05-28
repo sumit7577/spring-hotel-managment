@@ -2,7 +2,7 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.Weekend;
 import com.hotel.jorvik.response.ErrorResponse;
-import com.hotel.jorvik.services.interfaces.WeekendService;
+import com.hotel.jorvik.services.WeekendService;
 import com.hotel.jorvik.response.FailResponse;
 import com.hotel.jorvik.response.Response;
 import com.hotel.jorvik.response.SuccessResponse;

@@ -12,22 +12,22 @@ public class MenuItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "id")
+    private int id;
 
     @NotNull
-    @Column(name = "menu_Date", nullable = false)
+    @Column(name = "menu_date", nullable = false)
     @FutureOrPresent
     private Date menuDate;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dish_ID")
+    @JoinColumn(name = "dish_id")
     private Dish dish;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menuType_ID")
+    @JoinColumn(name = "menu_type_id")
     private MenuType menuType;
 
     public MenuItem() {

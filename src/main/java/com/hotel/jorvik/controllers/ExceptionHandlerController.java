@@ -24,6 +24,7 @@ public class ExceptionHandlerController {
     protected ResponseEntity<Response> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(ex.getBindingResult().toString()));
     }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Response> handleConstraintViolation(ConstraintViolationException ex) {
         Set<String> violations = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
@@ -46,7 +47,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Response> handleException(Exception e) {
+    protected ResponseEntity<Response> handleException(Exception e) throws Exception {
         String message = e.getMessage() == null ? e.toString() : e + " " + e.getMessage();
         message = message + "\n" + Arrays.toString(e.getStackTrace());
         message = message.length() > 1000 ? message.substring(0, 1000) : message;

@@ -9,21 +9,20 @@ import lombok.NonNull;
 @Entity
 @Table(name = "Room_Type")
 public class RoomType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    @NonNull
     @Positive
     @Column(name = "room_occupancy", nullable = false)
     private int roomOccupancy;
 
-    @NonNull
     @Positive
     @Column(name = "price", nullable = false)
     private int price;
 
-    @NonNull
     @Positive
     @Column(name = "room_area", nullable = false)
     private int roomArea;

@@ -7,10 +7,12 @@ import jakarta.validation.constraints.*;
 
 @Data
 @Entity
-@Table(name = "Room_Reservations")
+@Table(name = "Room_Reservation")
 public class RoomReservations {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @NotNull
@@ -25,16 +27,16 @@ public class RoomReservations {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_number", referencedColumnName = "number")
+    @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
     public RoomReservations() {

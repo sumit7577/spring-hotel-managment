@@ -1,7 +1,7 @@
 package com.hotel.jorvik.security.implementation;
 
 import com.hotel.jorvik.models.User;
-import com.hotel.jorvik.models.enums.ETokenType;
+import com.hotel.jorvik.models.TokenType.ETokenType;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
@@ -32,6 +32,9 @@ public class EmailServiceImp implements EmailService {
 
     @Override
     public void confirmEmail(String token) {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("Token is empty");
+        }
         final String userEmail;
         userEmail = jwtService.extractUsername(token);
         if (userEmail != null) {

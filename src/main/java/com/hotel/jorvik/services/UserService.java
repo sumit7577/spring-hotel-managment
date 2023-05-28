@@ -1,4 +1,4 @@
-package com.hotel.jorvik.services.interfaces;
+package com.hotel.jorvik.services;
 
 import com.hotel.jorvik.models.DTO.*;
 

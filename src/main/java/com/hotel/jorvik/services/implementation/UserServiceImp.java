@@ -2,16 +2,13 @@ package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.DTO.*;
 import com.hotel.jorvik.models.User;
-import com.hotel.jorvik.models.enums.ETokenType;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.EmailService;
-import com.hotel.jorvik.security.JwtService;
-import com.hotel.jorvik.services.interfaces.UserService;
+import com.hotel.jorvik.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;

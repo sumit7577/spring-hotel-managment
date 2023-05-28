@@ -11,8 +11,8 @@ public class EntertainmentType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "id")
+    private int id;
 
     @NotBlank
     @Size(min = 3, max = 50, message = "Name cannot be less that 3 and more than 50 characters")
@@ -21,7 +21,7 @@ public class EntertainmentType {
 
     @Positive
     @Column(name = "price", nullable = false)
-    private Integer price;
+    private int price;
 
     public EntertainmentType() {
     }

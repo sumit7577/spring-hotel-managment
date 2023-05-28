@@ -1,7 +1,7 @@
 package com.hotel.jorvik.models;
 
-import com.hotel.jorvik.models.enums.ETokenType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,25 +13,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "Token")
 public class Token {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     private int id;
 
     @Column(name = "token", nullable = false)
     private String token;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "token_type", nullable = false)
-    private ETokenType tokenType;
-
-    @Column(name = "expired", nullable = false)
-
-    private boolean expired;
-    @Column(name = "revoked", nullable = false)
-    private boolean revoked;
-
     @ManyToOne
-    @JoinColumn(name = "user_ID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "token_type_id", referencedColumnName = "id")
+    private TokenType tokenType;
 }

@@ -2,7 +2,7 @@ package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.Weekend;
 import com.hotel.jorvik.repositories.WeekendRepository;
-import com.hotel.jorvik.services.interfaces.WeekendService;
+import com.hotel.jorvik.services.WeekendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
