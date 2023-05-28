@@ -19,6 +19,7 @@ public class TokenType {
     @Column(name = "id")
     private int id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private ETokenType type;
 

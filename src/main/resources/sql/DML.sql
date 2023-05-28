@@ -1,9 +1,9 @@
 -- Role
 INSERT INTO Role (name) VALUES
-                            ('Client'),
-                            ('Cleaner'),
-                            ('Restaurant'),
-                            ('Administrator');
+                            ('ROLE_USER'),
+                            ('ROLE_CLEANER'),
+                            ('ROLE_RESTAURANT'),
+                            ('ROLE_ADMIN');
 
 -- Token
 INSERT INTO Token_Type (type) VALUES
@@ -117,7 +117,7 @@ INSERT INTO Menu_Item (menu_date, dish_ID, menu_type_ID) VALUES
                                                              ('2023-07-10', 3, 3);
 
 -- Place
-INSERT INTO Place (place) VALUES
+INSERT INTO Place (name) VALUES
                               ('Courtyard'),
                               ('Restaurant');
 

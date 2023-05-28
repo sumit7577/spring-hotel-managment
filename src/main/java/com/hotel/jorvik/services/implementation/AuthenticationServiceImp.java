@@ -48,7 +48,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
                     throw new IllegalArgumentException("Phone already exists");
                 });
         Role defaultRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("User type not found"));
 
         User user = new User(
                 request.getFirstName(),

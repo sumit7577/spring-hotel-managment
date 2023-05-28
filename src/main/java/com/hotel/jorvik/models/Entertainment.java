@@ -24,7 +24,7 @@ public class Entertainment {
     private int lockCode;
 
     @NotNull(message = "Entertainment type is required")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "entertainment_type_id")
     private EntertainmentType entertainmentType;
 

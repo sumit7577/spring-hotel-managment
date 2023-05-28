@@ -24,7 +24,7 @@ public class Room {
     private int accessCode;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_type_id", referencedColumnName = "id")
     private RoomType roomType;
 

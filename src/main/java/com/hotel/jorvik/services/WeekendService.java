@@ -5,8 +5,8 @@ import com.hotel.jorvik.models.Weekend;
 public interface WeekendService {
     Weekend getById(int id);
     Iterable<Weekend> getByDate(String date);
-    boolean updateById(int id, Weekend weekend);
-    boolean deleteById(int id);
-    void create(Weekend weekend);
+    void updateById(int id, Weekend weekend);
+    void deleteById(int id);
+    Weekend create(Weekend weekend);
 }
 

@@ -5,9 +5,9 @@ import com.hotel.jorvik.models.DTO.*;
 public interface UserService {
     Iterable<UserDTO> getAll();
     UserDTO getById(int id);
-    boolean updatePassword(PasswordChangeRequest passwordChangeRequest);
-    boolean updateEmail(EmailChangeRequest emailChangeRequest);
-    boolean resentEmailVerification();
-    boolean updatePhone(PhoneChangeRequest phoneChangeRequest);
-    boolean updateDiscount(int id, DiscountChangeRequest discountChangeRequest);
+    void updatePassword(PasswordChangeRequest passwordChangeRequest);
+    void updateEmail(EmailChangeRequest emailChangeRequest);
+    void resentEmailVerification();
+    void updatePhone(PhoneChangeRequest phoneChangeRequest);
+    void updateDiscount(int id, DiscountChangeRequest discountChangeRequest);
 }

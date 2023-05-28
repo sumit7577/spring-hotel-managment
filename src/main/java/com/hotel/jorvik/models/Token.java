@@ -27,7 +27,7 @@ public class Token {
     private User user;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "token_type_id", referencedColumnName = "id")
     private TokenType tokenType;
 }

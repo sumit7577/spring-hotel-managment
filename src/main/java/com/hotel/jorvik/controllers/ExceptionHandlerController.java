@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,11 @@ public class ExceptionHandlerController {
         return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Response> handleNoSuchElement(NoSuchElementException ex) {
+        return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>(ex.getMessage()));
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Response> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
@@ -47,10 +53,11 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Response> handleException(Exception e) throws Exception {
-        String message = e.getMessage() == null ? e.toString() : e + " " + e.getMessage();
-        message = message + "\n" + Arrays.toString(e.getStackTrace());
+    protected ResponseEntity<Response> handleException(Exception ex) throws Exception {
+        String message = ex.getMessage() == null ? ex.toString() : ex + " " + ex.getMessage();
+        message = message + "\n" + Arrays.toString(ex.getStackTrace());
         message = message.length() > 1000 ? message.substring(0, 1000) : message;
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ErrorResponse(message));
+        // return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ErrorResponse(message));
+        throw ex;
     }
 }

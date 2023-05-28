@@ -108,7 +108,7 @@ public class JwtServiceImp implements JwtService {
     @Override
     public void saveUserToken(User user, String jwtToken, ETokenType tokenType) {
         TokenType type = tokenTypeRepository.findByType(tokenType)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Token type not found"));
         Token token = Token.builder()
                 .user(user)
                 .token(jwtToken)

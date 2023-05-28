@@ -1,13 +1,13 @@
 package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.Weekend;
-import com.hotel.jorvik.response.ErrorResponse;
 import com.hotel.jorvik.services.WeekendService;
 import com.hotel.jorvik.response.FailResponse;
 import com.hotel.jorvik.response.Response;
 import com.hotel.jorvik.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.format.DateTimeFormatter;
@@ -25,9 +25,6 @@ public class WeekendController {
     @GetMapping("/get/{id}")
     public ResponseEntity<Response> getById(@PathVariable Integer id) {
         Weekend weekend = service.getById(id);
-        if (weekend == null) {
-            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Weekend not found"));
-        }
         return ResponseEntity.ok().body(new SuccessResponse<>(weekend));
     }
 
@@ -48,23 +45,19 @@ public class WeekendController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<Response> updateById(@PathVariable Integer id, @RequestBody Weekend weekend){
-        if (service.updateById(id, weekend)) {
-            return ResponseEntity.ok().body(new SuccessResponse<>(null));
-        }
-        return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse("Weekend not found"));
+        service.updateById(id, weekend);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Response> delete(@PathVariable Integer id) {
-        if (service.deleteById(id)) {
-            return ResponseEntity.ok().body(new SuccessResponse<>(null));
-        }
-        return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse("Weekend not found"));
+        service.deleteById(id);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @PostMapping("/add")
     public ResponseEntity<Response> create(@RequestBody Weekend weekend) {
-        service.create(weekend);
-        return ResponseEntity.ok().body(new SuccessResponse<>(null));
+        Weekend createdWeekend = service.create(weekend);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse<>(createdWeekend));
     }
 }

@@ -74,7 +74,7 @@ CREATE TABLE Payment (
 -- Table: Place
 CREATE TABLE Place (
                        id int NOT NULL AUTO_INCREMENT,
-                       place varchar(100) NOT NULL,
+                       name varchar(100) NOT NULL,
                        CONSTRAINT Place_pk PRIMARY KEY (id)
 );
 

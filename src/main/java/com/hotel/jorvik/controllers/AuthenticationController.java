@@ -9,6 +9,7 @@ import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.services.AuthenticationService;
 import com.hotel.jorvik.security.implementation.RegisterRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<Response> register(@RequestBody RegisterRequest request){
-        return ResponseEntity.ok(new SuccessResponse<>(authenticationService.register(request)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse<>(authenticationService.register(request)));
     }
 
     @PostMapping("/authenticate")
