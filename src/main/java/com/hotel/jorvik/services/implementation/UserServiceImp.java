@@ -6,6 +6,7 @@ import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,6 +47,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void updatePassword(PasswordChangeRequest passwordChangeRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -67,6 +69,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateEmail(EmailChangeRequest emailChangeRequest) {
         repository.findByEmail(emailChangeRequest.getEmail())
                 .ifPresent(user -> {
@@ -85,6 +88,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void resentEmailVerification() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = repository.findByEmail(email);
@@ -95,6 +99,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void updatePhone(PhoneChangeRequest phoneChangeRequest) {
         if (!tools.isValidPhone(phoneChangeRequest.getPhone())) {
             throw new IllegalArgumentException("Phone is not valid");
@@ -109,6 +114,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateDiscount(int id, DiscountChangeRequest discountChangeRequest) {
         Optional<User> user = repository.findById(id);
         if (user.isEmpty()) {

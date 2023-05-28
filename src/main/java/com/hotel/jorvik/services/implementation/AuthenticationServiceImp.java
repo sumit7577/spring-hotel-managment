@@ -11,6 +11,7 @@ import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.*;
 import com.hotel.jorvik.security.implementation.RegisterRequest;
 import com.hotel.jorvik.services.AuthenticationService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +33,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     private final EmailService emailService;
     private final SecurityTools tools;
 
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         if (!tools.isValidPassword(request.getPassword())) {
             throw new IllegalArgumentException("Password is not valid");
@@ -68,6 +70,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
                 .build();
     }
 
+    @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         try {
             authenticationManager.authenticate(
@@ -95,6 +98,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void resetPasswordRequest(PasswordResetRequest passwordResetRequest){
         Optional<User> user = userRepository.findByEmail(passwordResetRequest.getEmail());
         if (user.isEmpty()) {
@@ -104,6 +108,7 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void resetPassword(String token, PasswordResetConfirmedRequest passwordRequest){
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("Token is empty");

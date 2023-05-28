@@ -5,6 +5,7 @@ import com.hotel.jorvik.models.Weekend;
 import com.hotel.jorvik.repositories.PlaceRepository;
 import com.hotel.jorvik.repositories.WeekendRepository;
 import com.hotel.jorvik.services.WeekendService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class WeekendServiceImp implements WeekendService {
     }
 
     @Override
+    @Transactional
     public void updateById(int id, Weekend newWeekend) {
         Optional<Weekend> weekendToEdit = weekendRepository.findById(id);
         if (weekendToEdit.isEmpty()) {
