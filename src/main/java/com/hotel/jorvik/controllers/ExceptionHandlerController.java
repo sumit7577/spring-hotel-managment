@@ -61,7 +61,7 @@ public class ExceptionHandlerController {
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Response> handleException(Exception ex) throws Exception {
+    protected ResponseEntity<Response> handleException(Exception ex) {
         log.error("An exception occurred", ex);
         String message = ex.getMessage() == null ? ex.toString() : ex + " " + ex.getMessage();
         message = message + "\n" + Arrays.toString(ex.getStackTrace());
