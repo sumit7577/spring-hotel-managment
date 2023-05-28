@@ -1,7 +1,7 @@
 package com.hotel.jorvik.security.implementation;
 
 import com.hotel.jorvik.models.User;
-import com.hotel.jorvik.models.enums.ETokenType;
+import com.hotel.jorvik.models.TokenType.ETokenType;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
@@ -27,19 +29,22 @@ public class EmailServiceImp implements EmailService {
                 user.getEmail(),
                 "Confirm your email",
                 "Please, confirm your email by clicking on the link: " + confirmEmailLink);
-        jwtService.saveUserToken(user, confirmationToken, ETokenType.CONFIRMATION);
+        jwtService.saveUserToken(user, confirmationToken, ETokenType.EMAIL_CONFIRMATION);
     }
 
     @Override
     public void confirmEmail(String token) {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("Token is empty");
+        }
         final String userEmail;
         userEmail = jwtService.extractUsername(token);
         if (userEmail != null) {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow();
             if (jwtService.isTokenValid(token, user) && jwtService.isEmailToken(token)) {
-                jwtService.revokeAllUserTokens(user, ETokenType.CONFIRMATION);
-                user.setConfirmed(true);
+                jwtService.revokeAllUserTokens(user, ETokenType.EMAIL_CONFIRMATION);
+                user.setVerified(new Timestamp(System.currentTimeMillis()));
                 userRepository.save(user);
             }
         } else {

@@ -2,7 +2,6 @@ package com.hotel.jorvik.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.sql.Timestamp;
 import java.util.List;
 import jakarta.validation.constraints.*;
 
@@ -10,7 +9,12 @@ import jakarta.validation.constraints.*;
 @Entity
 @Table(name = "Room")
 public class Room {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
     @Column(name = "number", nullable = false)
     @Positive
     private int number;
@@ -19,29 +23,23 @@ public class Room {
     @Positive
     private int accessCode;
 
-    @Column(name = "floor", nullable = false)
-    @Positive
-    private int floor;
-
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomType_ID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "room_type_id", referencedColumnName = "id")
     private RoomType roomType;
-
-    @Column(name = "cleaning_request")
-    private Timestamp cleaningRequest;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
     private List<RoomReservations> roomReservations;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
+    private List<CleaningHistory> cleaningHistories;
+
     public Room() {
     }
 
-    public Room(int number, int accessCode, int floor, RoomType roomType, Timestamp cleaningRequest) {
+    public Room(int number, int accessCode, RoomType roomType) {
         this.number = number;
         this.accessCode = accessCode;
-        this.floor = floor;
         this.roomType = roomType;
-        this.cleaningRequest = cleaningRequest;
     }
 }

@@ -12,17 +12,20 @@ public class Entertainment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "id")
+    private int id;
 
     @NotBlank(message = "Description is required")
     @Size(min = 3, max = 100, message = "Description cannot be less that 3 and more than 500 characters")
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "lock_code")
+    private int lockCode;
+
     @NotNull(message = "Entertainment type is required")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "entertainmentType_ID")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "entertainment_type_id")
     private EntertainmentType entertainmentType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entertainment")
@@ -31,8 +34,9 @@ public class Entertainment {
     public Entertainment() {
     }
 
-    public Entertainment(String description, EntertainmentType entertainmentType) {
+    public Entertainment(String description, int lockCode, EntertainmentType entertainmentType) {
         this.description = description;
+        this.lockCode = lockCode;
         this.entertainmentType = entertainmentType;
     }
 }

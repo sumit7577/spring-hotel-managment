@@ -9,8 +9,10 @@ import jakarta.validation.constraints.*;
 @Entity
 @Table(name = "Payment")
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @NotNull

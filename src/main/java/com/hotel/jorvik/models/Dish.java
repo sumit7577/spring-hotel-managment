@@ -11,14 +11,13 @@ public class Dish {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Integer id;
+    @Column(name = "id")
+    private int id;
 
     @NotBlank(message = "Name is required")
     @Size(min = 3, max = 50, message = "Name cannot be less that 3 and more than 50 characters")
     @Column(name = "name", nullable = false)
     private String name;
-
 
     @NotBlank(message = "Description is required")
     @Size(min = 3, max = 500, message = "Description cannot be less that 3 and more than 500 characters")

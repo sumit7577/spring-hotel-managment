@@ -1,7 +1,7 @@
 package com.hotel.jorvik.security;
 
 import com.hotel.jorvik.models.User;
-import com.hotel.jorvik.models.enums.ETokenType;
+import com.hotel.jorvik.models.TokenType.ETokenType;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {

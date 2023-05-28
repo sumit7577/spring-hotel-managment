@@ -1,6 +1,5 @@
 package com.hotel.jorvik.models;
 
-import com.hotel.jorvik.models.enums.ERole;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import lombok.Data;
@@ -11,8 +10,16 @@ import org.springframework.security.core.GrantedAuthority;
 @Table(name = "Role")
 public class Role implements GrantedAuthority {
 
+    public enum ERole {
+        ROLE_USER,
+        ROLE_ADMIN,
+        ROLE_CLEANER,
+        ROLE_RESTAURANT
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
     @Enumerated(EnumType.STRING)
