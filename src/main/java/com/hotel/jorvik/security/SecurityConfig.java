@@ -55,5 +55,4 @@ public class SecurityConfig {
     public SendGrid sendGrid() {
         return new SendGrid(sendGridAPIKey);
     }
-
 }

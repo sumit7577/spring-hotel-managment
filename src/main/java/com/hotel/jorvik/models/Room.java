@@ -1,5 +1,6 @@
 package com.hotel.jorvik.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -29,9 +30,11 @@ public class Room {
     private RoomType roomType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
-    private List<RoomReservations> roomReservations;
+    @JsonIgnore
+    private List<RoomReservation> roomReservations;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "room")
+    @JsonIgnore
     private List<CleaningHistory> cleaningHistories;
 
     public Room() {

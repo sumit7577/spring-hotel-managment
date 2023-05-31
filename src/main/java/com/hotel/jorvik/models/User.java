@@ -72,10 +72,10 @@ public class User implements UserDetails {
     private List<Token> tokens;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<EntertainmentReservations> entertainmentReservations;
+    private List<EntertainmentReservation> entertainmentReservations;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<RoomReservations> roomReservations;
+    private List<RoomReservation> roomReservations;
 
     public User() {
     }
