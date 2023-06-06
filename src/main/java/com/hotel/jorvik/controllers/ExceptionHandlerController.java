@@ -1,8 +1,8 @@
 package com.hotel.jorvik.controllers;
 
-import com.hotel.jorvik.response.ErrorResponse;
-import com.hotel.jorvik.response.FailResponse;
-import com.hotel.jorvik.response.Response;
+import com.hotel.jorvik.responses.ErrorResponse;
+import com.hotel.jorvik.responses.FailResponse;
+import com.hotel.jorvik.responses.Response;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

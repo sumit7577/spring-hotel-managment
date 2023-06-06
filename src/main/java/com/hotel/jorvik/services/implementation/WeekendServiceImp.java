@@ -4,20 +4,15 @@ import com.hotel.jorvik.models.Place;
 import com.hotel.jorvik.models.Weekend;
 import com.hotel.jorvik.repositories.PlaceRepository;
 import com.hotel.jorvik.repositories.WeekendRepository;
-import com.hotel.jorvik.response.FailResponse;
 import com.hotel.jorvik.services.WeekendService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

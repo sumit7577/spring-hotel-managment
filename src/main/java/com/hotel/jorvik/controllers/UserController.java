@@ -1,8 +1,8 @@
 package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.DTO.*;
-import com.hotel.jorvik.response.Response;
-import com.hotel.jorvik.response.SuccessResponse;
+import com.hotel.jorvik.responses.Response;
+import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

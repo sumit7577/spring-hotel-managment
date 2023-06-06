@@ -1,4 +1,4 @@
-package com.hotel.jorvik.response;
+package com.hotel.jorvik.responses;
 
 public enum ResponseStatus {
     success,

@@ -2,9 +2,9 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.Weekend;
 import com.hotel.jorvik.services.WeekendService;
-import com.hotel.jorvik.response.FailResponse;
-import com.hotel.jorvik.response.Response;
-import com.hotel.jorvik.response.SuccessResponse;
+import com.hotel.jorvik.responses.FailResponse;
+import com.hotel.jorvik.responses.Response;
+import com.hotel.jorvik.responses.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
