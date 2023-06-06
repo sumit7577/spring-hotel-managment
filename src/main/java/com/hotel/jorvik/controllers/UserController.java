@@ -1,8 +1,8 @@
 package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.DTO.*;
-import com.hotel.jorvik.response.Response;
-import com.hotel.jorvik.response.SuccessResponse;
+import com.hotel.jorvik.responses.Response;
+import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,51 +10,52 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
+
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Response> getById(@PathVariable Integer id) {
-        UserDTO user = service.getById(id);
+        UserDTO user = userService.getById(id);
         return ResponseEntity.ok().body(new SuccessResponse<>(user));
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<Response> getAll() {
-        return ResponseEntity.ok().body(new SuccessResponse<>(service.getAll()));
+        return ResponseEntity.ok().body(new SuccessResponse<>(userService.getAll()));
     }
 
     @PutMapping("/update-password")
     public ResponseEntity<Response> updatePassword(@RequestBody PasswordChangeRequest passwordChangeRequest){
-        service.updatePassword(passwordChangeRequest);
+        userService.updatePassword(passwordChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @PutMapping("/update-email")
     public ResponseEntity<Response> updateEmail(@RequestBody EmailChangeRequest emailChangeRequest) {
-        service.updateEmail(emailChangeRequest);
+        userService.updateEmail(emailChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @GetMapping("/resend-email")
     public ResponseEntity<Response> resendEmailVerification() {
-        service.resentEmailVerification();
+        userService.resentEmailVerification();
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @PutMapping("/update-phone")
     public ResponseEntity<Response> updatePhone(@RequestBody PhoneChangeRequest phoneChangeRequest) {
-        service.updatePhone(phoneChangeRequest);
+        userService.updatePhone(phoneChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-discount/{id}")
     public ResponseEntity<Response> updateDiscount(@PathVariable Integer id, @RequestBody DiscountChangeRequest discountChangeRequest) {
-        service.updateDiscount(id, discountChangeRequest);
+        userService.updateDiscount(id, discountChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 }

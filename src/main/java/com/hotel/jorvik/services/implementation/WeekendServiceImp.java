@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -30,6 +32,12 @@ public class WeekendServiceImp implements WeekendService {
 
     @Override
     public Iterable<Weekend> getByDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            formatter.parse(date);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Date format is not correct");
+        }
         return weekendRepository.findByDate(date);
     }
 

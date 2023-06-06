@@ -29,7 +29,7 @@ public class Entertainment {
     private EntertainmentType entertainmentType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entertainment")
-    private List<EntertainmentReservations> entertainmentReservations;
+    private List<EntertainmentReservation> entertainmentReservations;
 
     public Entertainment() {
     }

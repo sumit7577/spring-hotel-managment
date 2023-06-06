@@ -8,7 +8,7 @@ import jakarta.validation.constraints.*;
 @Data
 @Entity
 @Table(name = "Room_Reservation")
-public class RoomReservations {
+public class RoomReservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +39,10 @@ public class RoomReservations {
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
-    public RoomReservations() {
+    public RoomReservation() {
     }
 
-    public RoomReservations(Date fromDate, Date toDate, Room room, User user, Payment payment) {
+    public RoomReservation(Date fromDate, Date toDate, Room room, User user, Payment payment) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.room = room;

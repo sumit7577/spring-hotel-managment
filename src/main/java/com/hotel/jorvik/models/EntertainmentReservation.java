@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "Entertainment_Reservation")
-public class EntertainmentReservations {
+public class EntertainmentReservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,10 +36,10 @@ public class EntertainmentReservations {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    public EntertainmentReservations() {
+    public EntertainmentReservation() {
     }
 
-    public EntertainmentReservations(Timestamp date, Time time, User user, Entertainment entertainment, Payment payment) {
+    public EntertainmentReservation(Timestamp date, Time time, User user, Entertainment entertainment, Payment payment) {
         this.date = date;
         this.user = user;
         this.entertainment = entertainment;

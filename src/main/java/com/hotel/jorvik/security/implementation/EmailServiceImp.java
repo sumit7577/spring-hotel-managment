@@ -24,7 +24,7 @@ public class EmailServiceImp implements EmailService {
     @Override
     public void sendConfirmationEmail(User user) {
         String confirmationToken = jwtService.generateConfirmationToken(user);
-        String confirmEmailLink = domain + "/api/auth/email-confirmation/" + confirmationToken;
+        String confirmEmailLink = domain + "/api/v1/auth/email-confirmation/" + confirmationToken;
         emailSender.sendEmail(
                 user.getEmail(),
                 "Confirm your email",
@@ -54,7 +54,7 @@ public class EmailServiceImp implements EmailService {
 
     public void sendResetPasswordEmail(User user) {
         String resetPasswordToken = jwtService.generatePasswordResetToken(user);
-        String resetPasswordLink = domain + "/api/user/password-reset-confirm/" + resetPasswordToken;
+        String resetPasswordLink = domain + "/api/v1/user/password-reset-confirm/" + resetPasswordToken;
         emailSender.sendEmail(
                 user.getEmail(),
                 "Reset your password",

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WeekendRepository extends JpaRepository<Weekend, Integer> {
-    @Query(value = "SELECT * FROM weekend WHERE DATE(date_from) = DATE(:date)", nativeQuery = true)
+    @Query(value = "SELECT w FROM Weekend w WHERE DATE(w.dateFrom) = DATE(:date)")
     Iterable<Weekend> findByDate(@Param("date") String date);
 }
