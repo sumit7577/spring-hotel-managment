@@ -3,9 +3,14 @@ package com.hotel.jorvik.services;
 import com.hotel.jorvik.models.Room;
 import com.hotel.jorvik.models.RoomType;
 
+import java.util.List;
+
 public interface RoomService {
     Room getById(int id);
-    Iterable<Room> getAllByAvailableTime(String from, String to);
+    Room add(Room room);
+    void delete(int id);
+    List<Room> getAll();
+    List<Room> getAllByAvailableTimeAndType(String from, String to, int roomTypeId);
     boolean isRoomAvailable(int roomId, String from, String to);
-    Iterable<RoomType> getAllRoomTypesByAvailabilityAndOccupancy(String from, String to, int roomOccupancy);
+    List<RoomType> getAllRoomTypesByAvailabilityAndOccupancy(String from, String to, int roomOccupancy);
 }

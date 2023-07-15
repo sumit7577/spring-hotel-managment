@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class WeekendServiceImp implements WeekendService {
     }
 
     @Override
-    public Iterable<Weekend> getByDate(String date) {
+    public List<Weekend> getByDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             formatter.parse(date);

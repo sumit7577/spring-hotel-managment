@@ -11,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -26,14 +28,22 @@ public class RoomController {
         Room room = roomService.getById(id);
         return ResponseEntity.ok().body(new SuccessResponse<>(room));
     }
-    @GetMapping("/available/{dateFrom}/{dateTo}")
-    public ResponseEntity<Response> getAllByAvailableTime(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo) {
-        Iterable<Room> rooms = roomService.getAllByAvailableTime(dateFrom, dateTo);
-        if (!rooms.iterator().hasNext()) {
-            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Weekends not found"));
-        }
+
+    @PostMapping("/add")
+    public ResponseEntity<Response> add(@RequestBody Room room) {
+        Room newRoom = roomService.add(room);
+        return ResponseEntity.ok().body(new SuccessResponse<>(newRoom));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Response> delete(@PathVariable Integer id) {
+        roomService.delete(id);
+        return ResponseEntity.ok().body(new SuccessResponse<>("Room deleted"));
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<Response> getAll() {
+        Iterable<Room> rooms = roomService.getAll();
         return ResponseEntity.ok().body(new SuccessResponse<>(rooms));
     }
 
@@ -45,12 +55,24 @@ public class RoomController {
         return ResponseEntity.ok().body(new SuccessResponse<>(roomService.isRoomAvailable(id, dateFrom, dateTo)));
     }
 
+    @GetMapping("/available/{dateFrom}/{dateTo}/{roomTypeId}")
+    public ResponseEntity<Response> getAllByAvailableTimeAndType(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
+            @PathVariable Integer roomTypeId) {
+        List<Room> rooms = roomService.getAllByAvailableTimeAndType(dateFrom, dateTo, roomTypeId);
+        if (!rooms.iterator().hasNext()) {
+            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Rooms not found"));
+        }
+        return ResponseEntity.ok().body(new SuccessResponse<>(rooms));
+    }
+
     @GetMapping("/available-room-type/{dateFrom}/{dateTo}/{roomOccupancy}")
     public ResponseEntity<Response> getAllRoomTypesByAvailabilityAndOccupancy(
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
             @PathVariable int roomOccupancy) {
-        Iterable<RoomType> roomTypes = roomService.getAllRoomTypesByAvailabilityAndOccupancy(dateFrom, dateTo, roomOccupancy);
+        List<RoomType> roomTypes = roomService.getAllRoomTypesByAvailabilityAndOccupancy(dateFrom, dateTo, roomOccupancy);
         if (!roomTypes.iterator().hasNext()) {
             return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("No room types found"));
         }
