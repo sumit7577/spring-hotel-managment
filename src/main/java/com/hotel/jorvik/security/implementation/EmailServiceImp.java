@@ -17,18 +17,19 @@ import java.sql.Timestamp;
 public class EmailServiceImp implements EmailService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    @Value("${site.domain}")
-    private String domain;
+    @Value("${frontend.url}")
+    private String frontEndDomain;
     private final EmailSender emailSender;
 
     @Override
     public void sendConfirmationEmail(User user) {
         String confirmationToken = jwtService.generateConfirmationToken(user);
-        String confirmEmailLink = domain + "/api/v1/auth/email-confirmation/" + confirmationToken;
+        String confirmEmailLink = frontEndDomain + "/email-confirmation?emailToken=" + confirmationToken;
         emailSender.sendEmail(
                 user.getEmail(),
                 "Confirm your email",
                 "Please, confirm your email by clicking on the link: " + confirmEmailLink);
+        jwtService.revokeAllUserTokens(user, ETokenType.EMAIL_CONFIRMATION);
         jwtService.saveUserToken(user, confirmationToken, ETokenType.EMAIL_CONFIRMATION);
     }
 
@@ -42,7 +43,13 @@ public class EmailServiceImp implements EmailService {
         if (userEmail != null) {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow();
-            if (jwtService.isTokenValid(token, user) && jwtService.isEmailToken(token)) {
+            if (!jwtService.isTokenValid(token, user) || !jwtService.isEmailToken(token)) {
+                throw new IllegalArgumentException("Token is invalid");
+            }
+            else if (jwtService.isTokenExpired(token)) {
+                throw new IllegalArgumentException("Token is expired");
+            }
+            else {
                 jwtService.revokeAllUserTokens(user, ETokenType.EMAIL_CONFIRMATION);
                 user.setVerified(new Timestamp(System.currentTimeMillis()));
                 userRepository.save(user);
@@ -54,11 +61,12 @@ public class EmailServiceImp implements EmailService {
 
     public void sendResetPasswordEmail(User user) {
         String resetPasswordToken = jwtService.generatePasswordResetToken(user);
-        String resetPasswordLink = domain + "/api/v1/user/password-reset-confirm/" + resetPasswordToken;
+        String resetPasswordLink = frontEndDomain + "/login?resetToken=" + resetPasswordToken;
         emailSender.sendEmail(
                 user.getEmail(),
                 "Reset your password",
                 "Please, reset your password by clicking on the link: " + resetPasswordLink);
+        jwtService.revokeAllUserTokens(user, ETokenType.RESET_PASSWORD);
         jwtService.saveUserToken(user, resetPasswordToken, ETokenType.RESET_PASSWORD);
     }
 }

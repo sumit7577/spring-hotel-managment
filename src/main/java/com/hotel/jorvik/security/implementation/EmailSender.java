@@ -43,6 +43,9 @@ public class EmailSender {
                     + response.getBody() +
                     " "
                     + response.getHeaders());
+            if (response.getStatusCode() != 202) {
+                throw new RuntimeException("Email not sent");
+            }
         } catch (IOException ex) {
             log.error(ex.getMessage(), ex);
         }

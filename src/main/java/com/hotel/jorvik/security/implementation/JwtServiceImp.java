@@ -32,9 +32,9 @@ public class JwtServiceImp implements JwtService {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-    private static final long EXPIRATION_TIME_LOGIN = 1000 * 60 * 24 * 10; // s * m * h * d
-    private static final long EXPIRATION_TIME_CONFIRM = 1000 * 60 * 24 * 10; // s * m * h * d
-    private static final long EXPIRATION_TIME_PASSWORD_RESET = 1000 * 60 * 24; // s * m * h * d
+    private static final long EXPIRATION_TIME_LOGIN = 86400000 * 10; // ms * d
+    private static final long EXPIRATION_TIME_CONFIRM = 86400000 * 3; // ms * d
+    private static final long EXPIRATION_TIME_PASSWORD_RESET = 86400000 / 2; // ms * d
 
     @Override
     public String extractUsername(String token) {
@@ -101,7 +101,7 @@ public class JwtServiceImp implements JwtService {
         final String username = extractUsername(jwt);
         boolean tokenDatabaseCheck = tokenRepository
                 .findByToken(jwt).isPresent();
-        boolean isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(jwt));
+        boolean isValid = (username.equals(userDetails.getUsername()));
         return tokenDatabaseCheck && isValid;
     }
 
@@ -129,7 +129,8 @@ public class JwtServiceImp implements JwtService {
         return claims.get("token_type", String.class).equals("password_reset");
     }
 
-    private boolean isTokenExpired(String token) {
+    @Override
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

@@ -12,6 +12,7 @@ public interface JwtService {
     boolean isTokenValid(String jwt, UserDetails userDetails);
     boolean isEmailToken(String jwt);
     boolean isPasswordToken(String jwt);
+    boolean isTokenExpired(String token);
     void saveUserToken(User user, String jwtToken, ETokenType tokenType);
     String generatePasswordResetToken(UserDetails userDetails);
 }

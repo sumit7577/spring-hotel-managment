@@ -124,12 +124,15 @@ public class AuthenticationServiceImp implements AuthenticationService {
         }
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow();
-        if (jwtService.isTokenValid(token, user) && jwtService.isPasswordToken(token)) {
+
+        if (!jwtService.isTokenValid(token, user) || !jwtService.isPasswordToken(token)){
+            throw new IllegalArgumentException("Token is invalid");
+        } else if (jwtService.isTokenExpired(token)) {
+            throw new IllegalArgumentException("Token is expired");
+        } else {
             jwtService.revokeAllUserTokens(user, ETokenType.RESET_PASSWORD);
             user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
             userRepository.save(user);
-        } else {
-            throw new IllegalArgumentException("Token is invalid");
         }
     }
 }

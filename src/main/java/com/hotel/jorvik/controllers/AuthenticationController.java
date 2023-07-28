@@ -2,6 +2,7 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.DTO.PasswordResetConfirmedRequest;
 import com.hotel.jorvik.models.DTO.PasswordResetRequest;
+import com.hotel.jorvik.responses.FailResponse;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.security.AuthenticationRequest;

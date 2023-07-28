@@ -1,9 +1,12 @@
 package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.DTO.*;
+import com.hotel.jorvik.models.TokenType;
 import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.repositories.UserRepository;
+import com.hotel.jorvik.security.AuthenticationResponse;
 import com.hotel.jorvik.security.EmailService;
+import com.hotel.jorvik.security.JwtService;
 import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.UserService;
 import jakarta.transaction.Transactional;
@@ -29,6 +32,7 @@ public class UserServiceImp implements UserService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
     private final SecurityTools tools;
+    private final JwtService jwtService;
 
     @Override
     public List<UserDTO> getAll() {
@@ -45,6 +49,26 @@ public class UserServiceImp implements UserService {
             throw new NoSuchElementException("User not found");
         }
         return user.map(UserDTO::new).get();
+    }
+
+    @Override
+    public UserDTO getByToken() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()){
+            throw new NoSuchElementException("User not found");
+        }
+        return user.map(UserDTO::new).get();
+    }
+
+    @Override
+    public boolean checkEmailVerification() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()){
+            throw new NoSuchElementException("User not found");
+        }
+        return user.get().getVerified() != null;
     }
 
     @Override
@@ -71,9 +95,9 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void updateEmail(EmailChangeRequest emailChangeRequest) {
+    public AuthenticationResponse updateEmail(EmailChangeRequest emailChangeRequest) {
         userRepository.findByEmail(emailChangeRequest.getEmail())
-                .ifPresent(user -> {
+                .ifPresent(row -> {
                     throw new IllegalArgumentException("Email already exists");
                 });
 
@@ -82,10 +106,19 @@ public class UserServiceImp implements UserService {
         if (user.isEmpty()) {
             throw new NoSuchElementException("User not found");
         }
+
         user.get().setEmail(emailChangeRequest.getEmail());
         user.get().setVerified(null);
         emailService.sendConfirmationEmail(user.get());
         userRepository.save(user.get());
+
+        String jwtToken = jwtService.generateToken(user.get());
+        jwtService.revokeAllUserTokens(user.get(), TokenType.ETokenType.ACCESS);
+        jwtService.saveUserToken(user.get(), jwtToken, TokenType.ETokenType.ACCESS);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     @Override
