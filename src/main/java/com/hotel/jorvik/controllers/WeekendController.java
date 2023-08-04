@@ -5,6 +5,7 @@ import com.hotel.jorvik.services.WeekendService;
 import com.hotel.jorvik.responses.FailResponse;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class WeekendController {
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Response> updateById(@PathVariable Integer id, @RequestBody Weekend weekend){
+    public ResponseEntity<Response> updateById(@PathVariable Integer id, @RequestBody @Valid Weekend weekend){
         weekendService.updateById(id, weekend);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
@@ -48,7 +49,7 @@ public class WeekendController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Response> create(@RequestBody Weekend weekend) {
+    public ResponseEntity<Response> create(@RequestBody @Valid Weekend weekend) {
         Weekend createdWeekend = weekendService.create(weekend);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SuccessResponse<>(createdWeekend));
     }

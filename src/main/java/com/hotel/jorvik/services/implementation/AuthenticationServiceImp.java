@@ -1,5 +1,7 @@
 package com.hotel.jorvik.services.implementation;
 
+import com.hotel.jorvik.models.DTO.AuthenticationRequest;
+import com.hotel.jorvik.models.DTO.AuthenticationResponse;
 import com.hotel.jorvik.models.DTO.PasswordResetConfirmedRequest;
 import com.hotel.jorvik.models.DTO.PasswordResetRequest;
 import com.hotel.jorvik.models.Role;

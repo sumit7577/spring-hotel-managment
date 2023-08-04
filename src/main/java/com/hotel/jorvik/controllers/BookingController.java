@@ -1,4 +1,48 @@
 package com.hotel.jorvik.controllers;
 
+import com.hotel.jorvik.responses.Response;
+import com.hotel.jorvik.responses.SuccessResponse;
+import com.hotel.jorvik.services.BookingService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/bookings")
+@RequiredArgsConstructor
 public class BookingController {
+
+    private final BookingService bookingService;
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @GetMapping("/room/{dateFrom}/{dateTo}/{roomTypeId}")
+    public ResponseEntity<Response> bookRoom(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
+            @PathVariable int roomTypeId) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.bookRoom(dateFrom, dateTo, roomTypeId)));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @GetMapping("/room/getLastBooking")
+    public ResponseEntity<Response> getLastBooking() {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getLastBooking()));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @GetMapping("/room/getAllCurrentRooms")
+    public ResponseEntity<Response> getFirstTen() {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAllCurrentRooms()));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @GetMapping("/getAll")
+    public ResponseEntity<Response> getAll() {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAll()));
+    }
 }

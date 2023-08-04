@@ -21,9 +21,8 @@ public class Entertainment {
     private String description;
 
     @Column(name = "lock_code")
-    private int lockCode;
+    private Integer lockCode;
 
-    @NotNull(message = "Entertainment type is required")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "entertainment_type_id")
     private EntertainmentType entertainmentType;
@@ -34,7 +33,7 @@ public class Entertainment {
     public Entertainment() {
     }
 
-    public Entertainment(String description, int lockCode, EntertainmentType entertainmentType) {
+    public Entertainment(String description, Integer lockCode, EntertainmentType entertainmentType) {
         this.description = description;
         this.lockCode = lockCode;
         this.entertainmentType = entertainmentType;

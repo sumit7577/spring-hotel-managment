@@ -2,10 +2,10 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.Room;
 import com.hotel.jorvik.models.RoomType;
-import com.hotel.jorvik.responses.FailResponse;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.services.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 @RestController
 @RequestMapping("/api/v1/room")
 @RequiredArgsConstructor
-
 public class RoomController {
 
     private final RoomService roomService;
@@ -30,7 +27,7 @@ public class RoomController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Response> add(@RequestBody Room room) {
+    public ResponseEntity<Response> add(@RequestBody @Valid Room room) {
         Room newRoom = roomService.add(room);
         return ResponseEntity.ok().body(new SuccessResponse<>(newRoom));
     }
@@ -61,9 +58,6 @@ public class RoomController {
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
             @PathVariable Integer roomTypeId) {
         List<Room> rooms = roomService.getAllByAvailableTimeAndType(dateFrom, dateTo, roomTypeId);
-        if (!rooms.iterator().hasNext()) {
-            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("Rooms not found"));
-        }
         return ResponseEntity.ok().body(new SuccessResponse<>(rooms));
     }
 
@@ -73,9 +67,6 @@ public class RoomController {
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
             @PathVariable int roomOccupancy) {
         List<RoomType> roomTypes = roomService.getAllRoomTypesByAvailabilityAndOccupancy(dateFrom, dateTo, roomOccupancy);
-        if (!roomTypes.iterator().hasNext()) {
-            return ResponseEntity.status(NOT_FOUND).body(new FailResponse<>("No room types found"));
-        }
         return ResponseEntity.ok().body(new SuccessResponse<>(roomTypes));
     }
 }

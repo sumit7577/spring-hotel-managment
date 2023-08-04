@@ -22,15 +22,12 @@ public class Weekend {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @NotNull(message = "Start date is required")
     @Column(name = "date_from", nullable = false)
     private Timestamp dateFrom;
 
-    @NotNull(message = "Start date is required")
     @Column(name = "date_to", nullable = false)
     private Timestamp dateTo;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "place_id")
     private Place place;
