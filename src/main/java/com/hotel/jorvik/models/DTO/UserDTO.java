@@ -26,7 +26,6 @@ public class UserDTO {
     @Pattern(regexp = "^\\+?[0-9\\s]*$", message = "Phone number must contain only digits and spaces")
     private String phone;
 
-    @NotNull
     @Min(value = 0, message = "Discount must be a non-negative number")
     @Max(value = 100, message = "Discount cannot be greater than 100")
     private int discount;

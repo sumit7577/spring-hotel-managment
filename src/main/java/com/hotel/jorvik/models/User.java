@@ -49,7 +49,6 @@ public class User implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @NotNull
     @Min(value = 0, message = "Discount must be a non-negative number")
     @Max(value = 100, message = "Discount cannot be greater than 100")
     @Column(name = "discount")

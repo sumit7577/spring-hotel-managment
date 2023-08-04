@@ -1,5 +1,6 @@
 package com.hotel.jorvik.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -16,22 +17,20 @@ public class EntertainmentReservation {
     @Column(name = "id")
     private int id;
 
-    @NotNull(message = "Date is required")
     @Column(name = "date", nullable = false)
     @FutureOrPresent
     private Timestamp date;
 
-    @NotNull(message = "User is required")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotNull(message = "Entertainment is required")
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "entertainment_id")
     private Entertainment entertainment;
 
-    @NotNull(message = "Payment is required")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_id")
     private Payment payment;

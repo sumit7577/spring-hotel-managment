@@ -156,10 +156,10 @@ INSERT INTO Entertainment_Reservation (date, user_ID, entertainment_ID, payment_
                                                                                         ('2023-07-11 12:30:00', 1, 3, 3);
 
 -- Room reservations
-INSERT INTO Room_Reservation (from_date, to_date, user_ID, room_id, payment_ID) VALUES
-                                                                                    ('2023-07-10', '2023-07-12', 1, 10, NULL),
-                                                                                    ('2023-07-10', '2023-07-12', 3, 11, NULL),
-                                                                                    ('2023-07-10', '2023-07-12', 2, 12, NULL);
+INSERT INTO Room_Reservation (from_date, to_date, booked_at, user_ID, room_id, payment_ID) VALUES
+                                                                                    ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 1, 10, NULL),
+                                                                                    ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 3, 11, NULL),
+                                                                                    ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 2, 12, NULL);
 
 -- Cleaning history
 INSERT INTO Cleaning_History (room_id, requested_at, done_at) VALUES

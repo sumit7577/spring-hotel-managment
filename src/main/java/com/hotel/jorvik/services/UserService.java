@@ -1,7 +1,7 @@
 package com.hotel.jorvik.services;
 
 import com.hotel.jorvik.models.DTO.*;
-import com.hotel.jorvik.security.AuthenticationResponse;
+import com.hotel.jorvik.models.DTO.AuthenticationResponse;
 
 import java.util.List;
 

@@ -24,7 +24,6 @@ public class Room {
     @Positive
     private int accessCode;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_type_id", referencedColumnName = "id")
     private RoomType roomType;

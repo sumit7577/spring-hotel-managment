@@ -99,6 +99,7 @@ CREATE TABLE Room_Reservation (
                                   id int NOT NULL AUTO_INCREMENT,
                                   from_date date NOT NULL,
                                   to_date date NOT NULL,
+                                  booked_at timestamp NOT NULL,
                                   user_id int NOT NULL,
                                   room_id int NOT NULL,
                                   payment_id int NULL,

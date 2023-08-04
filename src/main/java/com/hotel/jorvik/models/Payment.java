@@ -15,12 +15,10 @@ public class Payment {
     @Column(name = "id")
     private int id;
 
-    @NotNull
     @FutureOrPresent
     @Column(name = "date", nullable = false)
     private Timestamp date;
 
-    @NotNull
     @Positive
     @Column(name = "amount", nullable = false)
     private int amount;

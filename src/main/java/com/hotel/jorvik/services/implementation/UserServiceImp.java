@@ -4,7 +4,7 @@ import com.hotel.jorvik.models.DTO.*;
 import com.hotel.jorvik.models.TokenType;
 import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.repositories.UserRepository;
-import com.hotel.jorvik.security.AuthenticationResponse;
+import com.hotel.jorvik.models.DTO.AuthenticationResponse;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
 import com.hotel.jorvik.security.SecurityTools;
@@ -31,7 +31,7 @@ public class UserServiceImp implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
-    private final SecurityTools tools;
+    private final SecurityTools securityTools;
     private final JwtService jwtService;
 
     @Override
@@ -63,12 +63,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     public boolean checkEmailVerification() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()){
-            throw new NoSuchElementException("User not found");
-        }
-        return user.get().getVerified() != null;
+        User user = securityTools.retrieveUserData();
+        return user.getVerified() != null;
     }
 
     @Override
@@ -76,7 +72,7 @@ public class UserServiceImp implements UserService {
     public void updatePassword(PasswordChangeRequest passwordChangeRequest) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (!tools.isValidPassword(passwordChangeRequest.getNewPassword())) {
+        if (!securityTools.isValidPassword(passwordChangeRequest.getNewPassword())) {
             throw new IllegalArgumentException("Password is not valid");
         }
         authenticationManager.authenticate(
@@ -85,12 +81,9 @@ public class UserServiceImp implements UserService {
                         passwordChangeRequest.getPassword()
                 )
         );
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new NoSuchElementException("User not found");
-        }
-        user.get().setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
-        userRepository.save(user.get());
+        User user = securityTools.retrieveUserData();
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+        userRepository.save(user);
     }
 
     @Override
@@ -101,20 +94,16 @@ public class UserServiceImp implements UserService {
                     throw new IllegalArgumentException("Email already exists");
                 });
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new NoSuchElementException("User not found");
-        }
+        User user = securityTools.retrieveUserData();
 
-        user.get().setEmail(emailChangeRequest.getEmail());
-        user.get().setVerified(null);
-        emailService.sendConfirmationEmail(user.get());
-        userRepository.save(user.get());
+        user.setEmail(emailChangeRequest.getEmail());
+        user.setVerified(null);
+        emailService.sendConfirmationEmail(user);
+        userRepository.save(user);
 
-        String jwtToken = jwtService.generateToken(user.get());
-        jwtService.revokeAllUserTokens(user.get(), TokenType.ETokenType.ACCESS);
-        jwtService.saveUserToken(user.get(), jwtToken, TokenType.ETokenType.ACCESS);
+        String jwtToken = jwtService.generateToken(user);
+        jwtService.revokeAllUserTokens(user, TokenType.ETokenType.ACCESS);
+        jwtService.saveUserToken(user, jwtToken, TokenType.ETokenType.ACCESS);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -124,27 +113,19 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public void resentEmailVerification() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new NoSuchElementException("User not found");
-        }
-        emailService.sendConfirmationEmail(user.get());
+        User user = securityTools.retrieveUserData();
+        emailService.sendConfirmationEmail(user);
     }
 
     @Override
     @Transactional
     public void updatePhone(PhoneChangeRequest phoneChangeRequest) {
-        if (!tools.isValidPhone(phoneChangeRequest.getPhone())) {
+        if (!securityTools.isValidPhone(phoneChangeRequest.getPhone())) {
             throw new IllegalArgumentException("Phone is not valid");
         }
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new NoSuchElementException("User not found");
-        }
-        user.get().setPhone(phoneChangeRequest.getPhone());
-        userRepository.save(user.get());
+        User user = securityTools.retrieveUserData();
+        user.setPhone(phoneChangeRequest.getPhone());
+        userRepository.save(user);
     }
 
     @Override

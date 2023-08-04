@@ -3,8 +3,8 @@ package com.hotel.jorvik.controllers;
 import com.hotel.jorvik.models.DTO.*;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
-import com.hotel.jorvik.security.AuthenticationResponse;
 import com.hotel.jorvik.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,13 +41,13 @@ public class UserController {
     }
 
     @PutMapping("/update-password")
-    public ResponseEntity<Response> updatePassword(@RequestBody PasswordChangeRequest passwordChangeRequest){
+    public ResponseEntity<Response> updatePassword(@RequestBody @Valid PasswordChangeRequest passwordChangeRequest){
         userService.updatePassword(passwordChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @PutMapping("/update-email")
-    public ResponseEntity<Response> updateEmail(@RequestBody EmailChangeRequest emailChangeRequest) {
+    public ResponseEntity<Response> updateEmail(@RequestBody @Valid EmailChangeRequest emailChangeRequest) {
         return ResponseEntity.ok().body(new SuccessResponse<>(userService.updateEmail(emailChangeRequest)));
     }
 
@@ -58,14 +58,14 @@ public class UserController {
     }
 
     @PutMapping("/update-phone")
-    public ResponseEntity<Response> updatePhone(@RequestBody PhoneChangeRequest phoneChangeRequest) {
+    public ResponseEntity<Response> updatePhone(@RequestBody @Valid PhoneChangeRequest phoneChangeRequest) {
         userService.updatePhone(phoneChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-discount/{id}")
-    public ResponseEntity<Response> updateDiscount(@PathVariable Integer id, @RequestBody DiscountChangeRequest discountChangeRequest) {
+    public ResponseEntity<Response> updateDiscount(@PathVariable Integer id, @RequestBody @Valid DiscountChangeRequest discountChangeRequest) {
         userService.updateDiscount(id, discountChangeRequest);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
