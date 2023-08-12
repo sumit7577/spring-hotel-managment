@@ -1,10 +1,10 @@
 package com.hotel.jorvik.services.implementation;
 
-import com.hotel.jorvik.models.DTO.*;
+import com.hotel.jorvik.models.DTO.user.*;
 import com.hotel.jorvik.models.TokenType;
 import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.repositories.UserRepository;
-import com.hotel.jorvik.models.DTO.AuthenticationResponse;
+import com.hotel.jorvik.models.DTO.auth.AuthenticationResponse;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
 import com.hotel.jorvik.security.SecurityTools;

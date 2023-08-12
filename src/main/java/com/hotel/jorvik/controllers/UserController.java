@@ -1,6 +1,6 @@
 package com.hotel.jorvik.controllers;
 
-import com.hotel.jorvik.models.DTO.*;
+import com.hotel.jorvik.models.DTO.user.*;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.services.UserService;

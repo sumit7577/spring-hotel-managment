@@ -1,7 +1,7 @@
 package com.hotel.jorvik.services;
 
-import com.hotel.jorvik.models.DTO.AllBookingsResponse;
-import com.hotel.jorvik.models.DTO.CurrentRoomResponse;
+import com.hotel.jorvik.models.DTO.bookings.AllBookingsResponse;
+import com.hotel.jorvik.models.DTO.bookings.CurrentRoomResponse;
 import com.hotel.jorvik.models.Room;
 
 import java.util.List;
