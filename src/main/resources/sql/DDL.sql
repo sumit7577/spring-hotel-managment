@@ -1,13 +1,12 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-05-28 11:20:06.396
+-- Last modification date: 2023-08-13 13:05:21.282
 
 -- tables
 -- Table: Cleaning_History
 CREATE TABLE Cleaning_History (
                                   id int NOT NULL AUTO_INCREMENT,
                                   room_id int NOT NULL,
-                                  requested_at timestamp NOT NULL,
-                                  done_at timestamp NULL,
+                                  cleaned_at timestamp NULL,
                                   CONSTRAINT Cleaning_History_pk PRIMARY KEY (id)
 );
 
@@ -35,7 +34,7 @@ CREATE TABLE Entertainment_Reservation (
                                            date timestamp NOT NULL,
                                            user_id int NOT NULL,
                                            entertainment_id int NOT NULL,
-                                           payment_id int NOT NULL,
+                                           payment_id int NULL,
                                            CONSTRAINT Entertainment_Reservation_pk PRIMARY KEY (id)
 );
 
@@ -146,7 +145,7 @@ CREATE TABLE User (
 
 -- Table: User_Role
 CREATE TABLE User_Role (
-                           user_id int NOT NULL AUTO_INCREMENT,
+                           user_id int NOT NULL,
                            role_id int NOT NULL,
                            CONSTRAINT User_Role_pk PRIMARY KEY (user_id,role_id)
 );
@@ -214,12 +213,12 @@ ALTER TABLE Token ADD CONSTRAINT Token_Token_Type FOREIGN KEY Token_Token_Type (
 ALTER TABLE Token ADD CONSTRAINT Token_User FOREIGN KEY Token_User (user_id)
     REFERENCES User (id);
 
--- Reference: UserRole_Role (table: User_Role)
-ALTER TABLE User_Role ADD CONSTRAINT UserRole_Role FOREIGN KEY UserRole_Role (role_id)
+-- Reference: User_Role_Role (table: User_Role)
+ALTER TABLE User_Role ADD CONSTRAINT User_Role_Role FOREIGN KEY User_Role_Role (role_id)
     REFERENCES Role (id);
 
--- Reference: UserRole_User (table: User_Role)
-ALTER TABLE User_Role ADD CONSTRAINT UserRole_User FOREIGN KEY UserRole_User (user_id)
+-- Reference: User_Role_User (table: User_Role)
+ALTER TABLE User_Role ADD CONSTRAINT User_Role_User FOREIGN KEY User_Role_User (user_id)
     REFERENCES User (id);
 
 -- Reference: Weekend_Place (table: Weekend)

@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/bookings")
@@ -44,5 +41,12 @@ public class BookingController {
     @GetMapping("/getAll")
     public ResponseEntity<Response> getAll() {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAll()));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @DeleteMapping("/deleteBooking/{reservationId}")
+    public ResponseEntity<Response> deleteBooking(@PathVariable int reservationId) {
+        bookingService.deleteRoomReservation(reservationId);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 }

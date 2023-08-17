@@ -1,10 +1,10 @@
 package com.hotel.jorvik.services.implementation;
 
-import com.hotel.jorvik.models.DTO.*;
+import com.hotel.jorvik.models.DTO.user.*;
 import com.hotel.jorvik.models.TokenType;
 import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.repositories.UserRepository;
-import com.hotel.jorvik.models.DTO.AuthenticationResponse;
+import com.hotel.jorvik.models.DTO.auth.AuthenticationResponse;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
 import com.hotel.jorvik.security.SecurityTools;
@@ -137,5 +137,11 @@ public class UserServiceImp implements UserService {
         }
         user.get().setDiscount(discountChangeRequest.getDiscount());
         userRepository.save(user.get());
+    }
+
+    @Override
+    public int getUserRoomReservationsCount() {
+        User user = securityTools.retrieveUserData();
+        return user.getRoomReservations().size();
     }
 }

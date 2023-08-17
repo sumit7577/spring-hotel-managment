@@ -1,4 +1,4 @@
-package com.hotel.jorvik.models.DTO;
+package com.hotel.jorvik.models.DTO.user;
 
 import com.hotel.jorvik.models.User;
 import jakarta.validation.constraints.*;

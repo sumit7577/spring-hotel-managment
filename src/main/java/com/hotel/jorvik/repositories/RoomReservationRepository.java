@@ -9,4 +9,6 @@ import java.util.List;
 public interface RoomReservationRepository extends JpaRepository<RoomReservation, Integer> {
     RoomReservation findFirstByUserOrderByBookedAtDesc(User user);
     List<RoomReservation> findAllByUser(User user);
+
+    List<RoomReservation> findAllByPaymentIsNull();
 }

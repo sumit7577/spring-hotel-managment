@@ -162,8 +162,8 @@ INSERT INTO Room_Reservation (from_date, to_date, booked_at, user_ID, room_id, p
                                                                                     ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 2, 12, NULL);
 
 -- Cleaning history
-INSERT INTO Cleaning_History (room_id, requested_at, done_at) VALUES
-                                                                  (12, '2023-06-10', null),
-                                                                  (12, '2023-06-10', null),
-                                                                  (12, '2023-06-10', null);
+INSERT INTO Cleaning_History (room_id, cleaned_at) VALUES
+                                                                  (12, '2023-06-10'),
+                                                                  (12, '2023-06-11'),
+                                                                  (12, '2023-06-12');
 

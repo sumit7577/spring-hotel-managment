@@ -1,7 +1,6 @@
 package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.Room;
-import com.hotel.jorvik.models.RoomReservation;
 import com.hotel.jorvik.models.RoomType;
 import com.hotel.jorvik.repositories.RoomRepository;
 import com.hotel.jorvik.repositories.RoomTypeRepository;
@@ -9,8 +8,6 @@ import com.hotel.jorvik.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;

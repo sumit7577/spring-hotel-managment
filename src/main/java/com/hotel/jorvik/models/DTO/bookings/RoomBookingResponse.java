@@ -1,4 +1,4 @@
-package com.hotel.jorvik.models.DTO;
+package com.hotel.jorvik.models.DTO.bookings;
 
 import jakarta.validation.constraints.Positive;
 import lombok.Data;

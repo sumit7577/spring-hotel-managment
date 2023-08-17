@@ -1,4 +1,4 @@
-package com.hotel.jorvik.models.DTO;
+package com.hotel.jorvik.models.DTO.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CurrentRoomResponse {
-    private int number;
-    private int accessCode;
-    String datePeriod;
+public class AuthenticationResponse {
+    private String token;
 }

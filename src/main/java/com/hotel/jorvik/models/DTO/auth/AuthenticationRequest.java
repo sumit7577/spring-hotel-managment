@@ -1,4 +1,4 @@
-package com.hotel.jorvik.models.DTO;
+package com.hotel.jorvik.models.DTO.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

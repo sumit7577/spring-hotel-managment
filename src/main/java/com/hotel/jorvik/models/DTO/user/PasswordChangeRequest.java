@@ -1,4 +1,4 @@
-package com.hotel.jorvik.models.DTO;
+package com.hotel.jorvik.models.DTO.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

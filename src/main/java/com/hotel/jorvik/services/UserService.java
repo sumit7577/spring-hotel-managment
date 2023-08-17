@@ -1,7 +1,7 @@
 package com.hotel.jorvik.services;
 
-import com.hotel.jorvik.models.DTO.*;
-import com.hotel.jorvik.models.DTO.AuthenticationResponse;
+import com.hotel.jorvik.models.DTO.auth.AuthenticationResponse;
+import com.hotel.jorvik.models.DTO.user.*;
 
 import java.util.List;
 
@@ -15,4 +15,5 @@ public interface UserService {
     void resentEmailVerification();
     void updatePhone(PhoneChangeRequest phoneChangeRequest);
     void updateDiscount(int id, DiscountChangeRequest discountChangeRequest);
+    int getUserRoomReservationsCount();
 }

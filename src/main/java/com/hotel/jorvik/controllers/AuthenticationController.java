@@ -1,10 +1,10 @@
 package com.hotel.jorvik.controllers;
 
-import com.hotel.jorvik.models.DTO.PasswordResetConfirmedRequest;
-import com.hotel.jorvik.models.DTO.PasswordResetRequest;
+import com.hotel.jorvik.models.DTO.user.PasswordResetConfirmedRequest;
+import com.hotel.jorvik.models.DTO.user.PasswordResetRequest;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
-import com.hotel.jorvik.models.DTO.AuthenticationRequest;
+import com.hotel.jorvik.models.DTO.auth.AuthenticationRequest;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.services.AuthenticationService;
 import com.hotel.jorvik.security.implementation.RegisterRequest;
