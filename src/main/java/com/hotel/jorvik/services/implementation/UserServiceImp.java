@@ -138,4 +138,10 @@ public class UserServiceImp implements UserService {
         user.get().setDiscount(discountChangeRequest.getDiscount());
         userRepository.save(user.get());
     }
+
+    @Override
+    public int getUserRoomReservationsCount() {
+        User user = securityTools.retrieveUserData();
+        return user.getRoomReservations().size();
+    }
 }

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class CreatePaymentResponse {
     private String clientSecret;
     private int amount;
+    private int reservationId;
 }

@@ -25,6 +25,8 @@ public class CreatePayment {
     private String dateTo;
     @SerializedName("roomTypeId")
     int roomTypeId;
+    @SerializedName("reservationId")
+    Integer reservationId;
 
     public CreatePayment(PaymentType paymentType, String timestampFrom){
         this.paymentType = paymentType;
@@ -36,5 +38,18 @@ public class CreatePayment {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.roomTypeId = roomTypeId;
+    }
+
+    public CreatePayment(PaymentType paymentType,  String dateFrom, String dateTo, int roomTypeId, Integer reservationId) {
+        this.paymentType = paymentType;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.roomTypeId = roomTypeId;
+        this.reservationId = reservationId;
+    }
+
+    public CreatePayment(PaymentType paymentType, String timestampFrom, Integer reservationId){
+        this.paymentType = paymentType;
+        this.timestampFrom = timestampFrom;
     }
 }

@@ -15,4 +15,5 @@ public interface UserService {
     void resentEmailVerification();
     void updatePhone(PhoneChangeRequest phoneChangeRequest);
     void updateDiscount(int id, DiscountChangeRequest discountChangeRequest);
+    int getUserRoomReservationsCount();
 }

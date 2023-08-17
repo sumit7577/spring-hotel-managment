@@ -3,7 +3,6 @@ package com.hotel.jorvik.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -23,24 +22,19 @@ public class CleaningHistory {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
-    @Column(name = "requested_at", nullable = false)
-    private Timestamp requestedAt;
-
-    @Column(name = "done_at", nullable = false)
+    @Column(name = "cleaned_at", nullable = false)
     @FutureOrPresent
-    private Timestamp doneAt;
+    private Timestamp cleanedAt;
 
     public CleaningHistory() {
     }
 
-    public CleaningHistory(Room room, Timestamp doneAt) {
+    public CleaningHistory(Room room) {
         this.room = room;
-        this.doneAt = doneAt;
     }
 
-    public CleaningHistory(Room room, Timestamp requestedAt, Timestamp doneAt) {
+    public CleaningHistory(Room room, Timestamp cleanedAt) {
         this.room = room;
-        this.requestedAt = requestedAt;
-        this.doneAt = doneAt;
+        this.cleanedAt = cleanedAt;
     }
 }

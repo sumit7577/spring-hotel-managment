@@ -14,13 +14,16 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class AllBookingsResponse {
 
+    Integer paymentId;
     String bookingType;
-    String datePeriod;
+    String fromDate;
+    String toDate;
     String name;
     String description;
     RoomReservation.BookingStatus bookingStatus;
-    Timestamp dateFrom;
+    Timestamp timestampFrom;
     int id;
+    Integer roomTypeId;
     int price;
     Integer accessCode;
 }

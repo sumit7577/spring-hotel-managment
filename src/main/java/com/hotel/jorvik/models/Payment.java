@@ -15,7 +15,6 @@ public class Payment {
     @Column(name = "id")
     private int id;
 
-    @FutureOrPresent
     @Column(name = "date", nullable = false)
     private Timestamp date;
 

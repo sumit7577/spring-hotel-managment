@@ -1,39 +1,37 @@
 package com.hotel.jorvik.services.implementation;
 
+import com.hotel.jorvik.models.*;
 import com.hotel.jorvik.models.DTO.bookings.AllBookingsResponse;
 import com.hotel.jorvik.models.DTO.bookings.CurrentRoomResponse;
-import com.hotel.jorvik.models.EntertainmentReservation;
-import com.hotel.jorvik.models.Room;
-import com.hotel.jorvik.models.RoomReservation;
-import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.repositories.EntertainmentReservationRepository;
 import com.hotel.jorvik.repositories.RoomReservationRepository;
 import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.BookingService;
 import com.hotel.jorvik.services.RoomService;
+import com.hotel.jorvik.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static com.hotel.jorvik.util.Tools.parseDate;
 
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImp implements BookingService {
 
     private final RoomService roomService;
+    private final UserService userService;
     private final RoomReservationRepository roomReservationRepository;
     private final EntertainmentReservationRepository entertainmentReservationRepository;
     private final SecurityTools securityTools;
 
     @Override
-    public Room bookRoom(String from, String to, int roomTypeId) {
+    public RoomReservation bookRoom(String from, String to, int roomTypeId) {
         Date sqlFromDate = parseDate(from);
         Date sqlToDate = parseDate(to);
 
@@ -43,12 +41,20 @@ public class BookingServiceImp implements BookingService {
         }
         Room room = rooms.iterator().next();
 
+        if (userService.getUserRoomReservationsCount() >= 5) {
+            throw new IllegalArgumentException("You can't book more than 5 rooms");
+        }
         User user = securityTools.retrieveUserData();
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         RoomReservation roomReservation = new RoomReservation(sqlFromDate, sqlToDate, timestamp, room, user);
         roomReservationRepository.save(roomReservation);
-        return room;
+        return roomReservation;
+    }
+
+    @Override
+    public RoomReservation getRoomReservation(int reservationId) {
+        return roomReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No reservation found"));
     }
 
     @Override
@@ -75,14 +81,16 @@ public class BookingServiceImp implements BookingService {
             bookings.add(
                     AllBookingsResponse.builder()
                             .id(roomReservation.getId())
-                            .description("Hotel room number " + roomReservation.getRoom().getNumber())
+                            .description("Hotel room reservation")
                             .price(roomReservation.getRoom().getRoomType().getPrice())
                             .name("Room")
-                            .datePeriod(roomReservation.getFromDate().toString() + " - " + roomReservation.getToDate().toString())
-                            .dateFrom(new Timestamp(roomReservation.getFromDate().getTime()))
+                            .fromDate(roomReservation.getFromDate().toString())
+                            .toDate(roomReservation.getToDate().toString())
+                            .timestampFrom(new Timestamp(roomReservation.getFromDate().getTime()))
                             .bookingType("Room")
+                            .roomTypeId(roomReservation.getRoom().getRoomType().getId())
                             .bookingStatus(getRoomBookingStatus(roomReservation))
-                            .accessCode(roomReservation.getRoom().getAccessCode())
+                            .paymentId(roomReservation.getPayment() == null ? null : roomReservation.getPayment().getId())
                             .build()
                     );
         }
@@ -93,16 +101,17 @@ public class BookingServiceImp implements BookingService {
                             .description(entertainmentReservation.getEntertainment().getDescription())
                             .price(entertainmentReservation.getEntertainment().getEntertainmentType().getPrice())
                             .name(entertainmentReservation.getEntertainment().getEntertainmentType().getName())
-                            .datePeriod(entertainmentReservation.getDate().toString())
-                            .dateFrom(entertainmentReservation.getDate())
+                            .fromDate(entertainmentReservation.getDate().toString())
+                            .timestampFrom(entertainmentReservation.getDate())
                             .bookingType(entertainmentReservation.getEntertainment().getEntertainmentType().getName())
                             .bookingStatus(getEntertainmentBookingStatus(entertainmentReservation))
                             .accessCode(entertainmentReservation.getEntertainment().getLockCode())
+                            .paymentId(entertainmentReservation.getPayment() == null ? null : entertainmentReservation.getPayment().getId())
                             .build()
             );
         }
 
-        bookings.sort((o1, o2) -> o2.getDateFrom().compareTo(o1.getDateFrom()));
+        bookings.sort((o1, o2) -> o2.getTimestampFrom().compareTo(o1.getTimestampFrom()));
         return bookings;
     }
 
@@ -125,21 +134,11 @@ public class BookingServiceImp implements BookingService {
         return rooms;
     }
 
-    private Date parseDate(String date) {
-        Date sqlDate;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            LocalDate parsedDate = LocalDate.parse(date, formatter);
-            sqlDate = Date.valueOf(parsedDate);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Date format is not correct");
-        }
-        return sqlDate;
-    }
-
     private RoomReservation.BookingStatus getRoomBookingStatus(RoomReservation roomReservation) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        if (roomReservation.getFromDate().after(timestamp)) {
+        if (roomReservation.getPayment() == null) {
+            return RoomReservation.BookingStatus.AWAITING_PAYMENT;
+        } else if (roomReservation.getFromDate().after(timestamp)) {
             return RoomReservation.BookingStatus.UPCOMING;
         } else if (roomReservation.getToDate().before(timestamp)) {
             return RoomReservation.BookingStatus.COMPLETED;
@@ -159,5 +158,38 @@ public class BookingServiceImp implements BookingService {
         } else {
             return RoomReservation.BookingStatus.ACTIVE;
         }
+    }
+
+    @Override
+    public void addPaymentToRoomReservation(int roomReservationId, Payment payment) {
+        RoomReservation roomReservation = roomReservationRepository.findById(roomReservationId).orElseThrow(() -> new NoSuchElementException("No room reservation found"));
+        roomReservation.setPayment(payment);
+        roomReservationRepository.save(roomReservation);
+    }
+
+    @Override
+    public void deleteUnpaidRoomReservations() {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        List<RoomReservation> roomReservations = roomReservationRepository.findAllByPaymentIsNull();
+        // Delete all unpaid room reservations that are in the past or 24 hours before the reservation
+        for (RoomReservation roomReservation : roomReservations) {
+            if (roomReservation.getFromDate().before(timestamp) ||
+                roomReservation.getFromDate().before(new Timestamp(timestamp.getTime() + 86400000))) {
+                roomReservationRepository.delete(roomReservation);
+            }
+        }
+    }
+
+    @Override
+    public void deleteRoomReservation(int reservationId) {
+        User user = securityTools.retrieveUserData();
+        RoomReservation reservation = roomReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No room reservation found"));
+        if (reservation.getUser().getId() != user.getId()) {
+            throw new IllegalArgumentException("You can't delete this reservation");
+        }
+        if (reservation.getPayment() != null) {
+            throw new IllegalArgumentException("You can't delete paid reservation");
+        }
+        roomReservationRepository.delete(reservation);
     }
 }
