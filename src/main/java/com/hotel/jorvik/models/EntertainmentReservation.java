@@ -17,9 +17,16 @@ public class EntertainmentReservation {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "from_date", nullable = false)
     @FutureOrPresent
-    private Timestamp date;
+    private Timestamp dateFrom;
+
+    @Column(name = "to_date", nullable = false)
+    @FutureOrPresent
+    private Timestamp dateTo;
+
+    @Column(name = "booked_at", nullable = false)
+    private Timestamp bookedAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
@@ -38,8 +45,18 @@ public class EntertainmentReservation {
     public EntertainmentReservation() {
     }
 
-    public EntertainmentReservation(Timestamp date, Time time, User user, Entertainment entertainment, Payment payment) {
-        this.date = date;
+    public EntertainmentReservation(Timestamp dateFrom, Timestamp dateTo, Timestamp bookedAt, User user, Entertainment entertainment) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.bookedAt = bookedAt;
+        this.user = user;
+        this.entertainment = entertainment;
+    }
+
+    public EntertainmentReservation(Timestamp dateFrom, Timestamp dateTo, Timestamp bookedAt, User user, Entertainment entertainment, Payment payment) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.bookedAt = bookedAt;
         this.user = user;
         this.entertainment = entertainment;
         this.payment = payment;

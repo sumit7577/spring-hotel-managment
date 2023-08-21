@@ -3,7 +3,9 @@ package com.hotel.jorvik.services.implementation;
 import com.hotel.jorvik.models.*;
 import com.hotel.jorvik.models.DTO.bookings.AllBookingsResponse;
 import com.hotel.jorvik.models.DTO.bookings.CurrentRoomResponse;
+import com.hotel.jorvik.repositories.EntertainmentRepository;
 import com.hotel.jorvik.repositories.EntertainmentReservationRepository;
+import com.hotel.jorvik.repositories.EntertainmentTypeRepository;
 import com.hotel.jorvik.repositories.RoomReservationRepository;
 import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.BookingService;
@@ -17,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.hotel.jorvik.util.Tools.parseDate;
 
@@ -28,6 +31,8 @@ public class BookingServiceImp implements BookingService {
     private final UserService userService;
     private final RoomReservationRepository roomReservationRepository;
     private final EntertainmentReservationRepository entertainmentReservationRepository;
+    private final EntertainmentRepository entertainmentRepository;
+    private final EntertainmentTypeRepository entertainmentTypeRepository;
     private final SecurityTools securityTools;
 
     @Override
@@ -50,6 +55,43 @@ public class BookingServiceImp implements BookingService {
         RoomReservation roomReservation = new RoomReservation(sqlFromDate, sqlToDate, timestamp, room, user);
         roomReservationRepository.save(roomReservation);
         return roomReservation;
+    }
+
+    @Override
+    public EntertainmentReservation bookEntertainment(String entertainmentType, String dateFrom, String timeFrom, String dateTo, String timeTo, int entertainmentId){
+        Timestamp dateTimeFrom = parseDate(dateFrom, timeFrom);
+        Timestamp dateTimeTo = parseDate(dateTo, timeTo);
+
+        User user = securityTools.retrieveUserData();
+
+        List<EntertainmentType> entertainmentTypes = entertainmentTypeRepository.findAll();
+        Optional<EntertainmentType> type = entertainmentTypes.stream()
+                .filter(entertainmentType1 -> entertainmentType1
+                        .getName()
+                        .equals(entertainmentType))
+                .findFirst();
+        if (type.isEmpty()) {
+            throw new IllegalArgumentException("Entertainment type not found");
+        }
+
+        List<Entertainment> entertainments = entertainmentRepository
+                .findAvailableEntertainmentsByTypeAndTime(type.get().getId(), dateTimeFrom, dateTimeTo);
+        Optional<Entertainment> entertainment = entertainments.stream()
+                .filter(entertainment1 -> entertainment1.getId() == entertainmentId)
+                .findFirst();
+
+        if (entertainment.isEmpty()) {
+            throw new IllegalArgumentException("Entertainment not found");
+        }
+
+        if (userService.getUserEntertainmentReservationsCount() >= 10) {
+            throw new IllegalArgumentException("You can't book more than 10 rooms");
+        }
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        EntertainmentReservation entertainmentReservation = new EntertainmentReservation(dateTimeFrom, dateTimeTo, timestamp, user, entertainment.get());
+        entertainmentReservationRepository.save(entertainmentReservation);
+        return entertainmentReservation;
     }
 
     @Override
@@ -101,8 +143,9 @@ public class BookingServiceImp implements BookingService {
                             .description(entertainmentReservation.getEntertainment().getDescription())
                             .price(entertainmentReservation.getEntertainment().getEntertainmentType().getPrice())
                             .name(entertainmentReservation.getEntertainment().getEntertainmentType().getName())
-                            .fromDate(entertainmentReservation.getDate().toString())
-                            .timestampFrom(entertainmentReservation.getDate())
+                            .fromDate(entertainmentReservation.getDateFrom().toString())
+                            .toDate(entertainmentReservation.getDateTo().toString())
+                            .timestampFrom(entertainmentReservation.getDateFrom())
                             .bookingType(entertainmentReservation.getEntertainment().getEntertainmentType().getName())
                             .bookingStatus(getEntertainmentBookingStatus(entertainmentReservation))
                             .accessCode(entertainmentReservation.getEntertainment().getLockCode())
@@ -151,9 +194,9 @@ public class BookingServiceImp implements BookingService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Timestamp timestampPlusOneHour = new Timestamp(System.currentTimeMillis() + 3600000);
 
-        if (entertainmentReservation.getDate().after(timestamp)) {
+        if (entertainmentReservation.getDateFrom().after(timestamp)) {
             return RoomReservation.BookingStatus.UPCOMING;
-        } else if (entertainmentReservation.getDate().before(timestampPlusOneHour)) {
+        } else if (entertainmentReservation.getDateFrom().before(timestampPlusOneHour)) {
             return RoomReservation.BookingStatus.COMPLETED;
         } else {
             return RoomReservation.BookingStatus.ACTIVE;
@@ -191,5 +234,18 @@ public class BookingServiceImp implements BookingService {
             throw new IllegalArgumentException("You can't delete paid reservation");
         }
         roomReservationRepository.delete(reservation);
+    }
+
+    @Override
+    public void deleteEntertainmentReservation(int reservationId) {
+        User user = securityTools.retrieveUserData();
+        EntertainmentReservation reservation = entertainmentReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No entertainment reservation found"));
+        if (reservation.getUser().getId() != user.getId()) {
+            throw new IllegalArgumentException("You can't delete this reservation");
+        }
+        if (reservation.getPayment() != null) {
+            throw new IllegalArgumentException("You can't delete paid reservation");
+        }
+        entertainmentReservationRepository.delete(reservation);
     }
 }

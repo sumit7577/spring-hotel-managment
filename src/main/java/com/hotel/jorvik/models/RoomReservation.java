@@ -1,5 +1,6 @@
 package com.hotel.jorvik.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Date;
@@ -39,6 +40,7 @@ public class RoomReservation {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -46,7 +48,6 @@ public class RoomReservation {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
-
 
     public RoomReservation() {
     }

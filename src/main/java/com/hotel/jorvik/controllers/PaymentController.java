@@ -72,7 +72,7 @@ public class PaymentController {
                         )
                         .putMetadata("paymentAmount", String.valueOf(paymentAmount))
                         .putMetadata("reservationId", String.valueOf(reservationId))
-                        .putMetadata("paymentType", createPayment.getPaymentType().toString())
+                        .putMetadata("paymentType", createPayment.getPaymentType())
                         .build();
 
         PaymentIntent paymentIntent = PaymentIntent.create(params);
@@ -97,9 +97,9 @@ public class PaymentController {
             int paymentAmount = Integer.parseInt(paymentIntent.getMetadata().get("paymentAmount"));
             int reservationId = Integer.parseInt(paymentIntent.getMetadata().get("reservationId"));
             Payment payment = paymentService.createPayment(paymentAmount);
-            CreatePayment.PaymentType paymentType = CreatePayment.PaymentType.valueOf(paymentIntent.getMetadata().get("paymentType"));
+            String paymentType = paymentIntent.getMetadata().get("paymentType");
 
-            if (paymentType == CreatePayment.PaymentType.ROOM_PAYMENT) {
+            if (paymentType.equals("Room")) {
                 bookingService.addPaymentToRoomReservation(reservationId, payment);
             } else {
                 // add payment to user

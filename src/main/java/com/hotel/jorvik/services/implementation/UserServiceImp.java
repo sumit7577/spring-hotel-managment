@@ -144,4 +144,10 @@ public class UserServiceImp implements UserService {
         User user = securityTools.retrieveUserData();
         return user.getRoomReservations().size();
     }
+
+    @Override
+    public int getUserEntertainmentReservationsCount() {
+        User user = securityTools.retrieveUserData();
+        return user.getEntertainmentReservations().size();
+    }
 }

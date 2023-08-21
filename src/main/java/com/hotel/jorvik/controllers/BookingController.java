@@ -49,4 +49,11 @@ public class BookingController {
         bookingService.deleteRoomReservation(reservationId);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @DeleteMapping("/deleteEntertainmentBooking/{reservationId}")
+    public ResponseEntity<Response> deleteEntertainmentBooking(@PathVariable int reservationId) {
+        bookingService.deleteEntertainmentReservation(reservationId);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
+    }
 }

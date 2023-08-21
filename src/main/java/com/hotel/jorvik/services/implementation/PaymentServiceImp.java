@@ -26,34 +26,20 @@ public class PaymentServiceImp implements PaymentService {
 
     @Override
     public int getPaymentAmount(CreatePayment createPayment) {
-        return switch (createPayment.getPaymentType()) {
-            case ROOM_PAYMENT ->
-                    getRoomPaymentAmount(createPayment.getRoomTypeId(), createPayment.getDateFrom(), createPayment.getDateTo());
-            case BICYCLE_PAYMENT ->
-                    getBicyclePaymentAmount(createPayment.getTimestampFrom());
-            case KAYAK_PAYMENT ->
-                    getKayakPaymentAmount(createPayment.getTimestampFrom());
-            case TENNIS_PAYMENT ->
-                    getTennisPaymentAmount(createPayment.getTimestampFrom());
-            default ->
-                    throw new IllegalArgumentException("Payment type not supported");
-        };
+        if (createPayment.getPaymentType().equals("Room")) {
+            return getRoomPaymentAmount(createPayment.getRoomTypeId(), createPayment.getDateFrom(), createPayment.getDateTo());
+        } else {
+            return getEntertainmentPaymentAmount(createPayment.getPaymentType(), createPayment.getDateFrom(), createPayment.getTimeFrom(), createPayment.getDateTo(), createPayment.getTimeTo());
+        }
     }
 
     @Override
     public int createReservation(CreatePayment createPayment) {
-        return switch (createPayment.getPaymentType()) {
-            case ROOM_PAYMENT ->
-                    bookingService.bookRoom(createPayment.getDateFrom(), createPayment.getDateTo(), createPayment.getRoomTypeId()).getId();
-            case BICYCLE_PAYMENT ->
-                    1;
-            case KAYAK_PAYMENT ->
-                    2;
-            case TENNIS_PAYMENT ->
-                    3;
-            default ->
-                    throw new IllegalArgumentException("Payment type not supported");
-        };
+        if (createPayment.getPaymentType().equals("Room")) {
+            return bookingService.bookRoom(createPayment.getDateFrom(), createPayment.getDateTo(), createPayment.getRoomTypeId()).getId();
+        } else {
+            return bookingService.bookEntertainment(createPayment.getPaymentType(), createPayment.getDateFrom(), createPayment.getTimeFrom(), createPayment.getDateTo(), createPayment.getTimeTo(), createPayment.getEntertainmentId()).getId();
+        }
     }
 
     @Override
@@ -77,15 +63,7 @@ public class PaymentServiceImp implements PaymentService {
         return (int) (pricePerNight * nights);
     }
 
-    private int getBicyclePaymentAmount(String timestampFrom) {
-        return 5;
-    }
-
-    private int getKayakPaymentAmount(String timestampFrom) {
-        return 5;
-    }
-
-    private int getTennisPaymentAmount(String timestampFrom) {
+    private int getEntertainmentPaymentAmount(String paymentType, String dateFrom, String timeFrom, String dateTo, String timeTo) {
         return 5;
     }
 }

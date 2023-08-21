@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-08-13 13:05:21.282
+-- Last modification date: 2023-08-20 13:34:39.642
 
 -- tables
 -- Table: Cleaning_History
@@ -31,7 +31,9 @@ CREATE TABLE Entertainment (
 -- Table: Entertainment_Reservation
 CREATE TABLE Entertainment_Reservation (
                                            id int NOT NULL AUTO_INCREMENT,
-                                           date timestamp NOT NULL,
+                                           from_date timestamp NOT NULL,
+                                           to_date timestamp NOT NULL,
+                                           booked_at timestamp NOT NULL,
                                            user_id int NOT NULL,
                                            entertainment_id int NOT NULL,
                                            payment_id int NULL,

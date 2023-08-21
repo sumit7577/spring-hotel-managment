@@ -118,8 +118,8 @@ INSERT INTO Menu_Item (menu_date, dish_ID, menu_type_ID) VALUES
 
 -- Place
 INSERT INTO Place (name) VALUES
-                              ('Courtyard'),
-                              ('Restaurant');
+                             ('Courtyard'),
+                             ('Restaurant');
 
 -- Weekend
 INSERT INTO Weekend (description, date_from, date_to, place_id) VALUES
@@ -135,12 +135,12 @@ INSERT INTO Payment (date, amount) VALUES
                                        ('2023-07-10 12:30:00', 40);
 
 -- User
-INSERT INTO User (first_name, last_name, email, phone, discount, password, enabled) VALUES
-                                                                                        ('John', 'Doe', 'johndoe@example.com', '+48859371835', 0, 'abf67e3fa8b1d3c5', null),
-                                                                                        ('Robert', 'Johnson', 'robertjohnson@example.com', '+48768547568', 0, 'gererherh52eewef4y', null),
-                                                                                        ('Amanda', 'Brown', 'amandabrown@example.com', '+48756321458', 0, 'c8b2a1e5f6d9', null),
-                                                                                        ('William', 'Davis', 'williamdavis@example.com', '+48536945856', 20, 'e9d7c1b8a2f6', null),
-                                                                                        ('Laura', 'Garcia', 'lauragarcia@example.com', '+48578632154', 0, 'b8a1c5d9e3f6', null);
+INSERT INTO User (first_name, last_name, email, phone, discount, password, verified) VALUES
+                                                                                         ('John', 'Doe', 'johndoe@example.com', '+48859371835', 0, 'abf67e3fa8b1d3c5', null),
+                                                                                         ('Robert', 'Johnson', 'robertjohnson@example.com', '+48768547568', 0, 'gererherh52eewef4y', null),
+                                                                                         ('Amanda', 'Brown', 'amandabrown@example.com', '+48756321458', 0, 'c8b2a1e5f6d9', null),
+                                                                                         ('William', 'Davis', 'williamdavis@example.com', '+48536945856', 20, 'e9d7c1b8a2f6', null),
+                                                                                         ('Laura', 'Garcia', 'lauragarcia@example.com', '+48578632154', 0, 'b8a1c5d9e3f6', null);
 
 -- User roles
 INSERT INTO User_Role (user_id, role_id) VALUES
@@ -151,19 +151,18 @@ INSERT INTO User_Role (user_id, role_id) VALUES
                                              (5,1);
 
 -- Entertainment reservations
-INSERT INTO Entertainment_Reservation (date, user_ID, entertainment_ID, payment_ID) VALUES
-                                                                                        ('2023-07-10 12:30:00', 1, 1, 2),
-                                                                                        ('2023-07-11 12:30:00', 1, 3, 3);
+INSERT INTO Entertainment_Reservation (from_date, to_date, booked_at, user_id, entertainment_id, payment_id) VALUES
+                                                                                                                 ('2023-07-10 12:30:00', '2023-07-10 13:30:00', '2023-07-10 12:30:00', 2, 1, 2),
+                                                                                                                 ('2023-07-11 13:30:00', '2023-07-11 14:30:00', '2023-07-10 12:30:00', 3, 3, 3);
 
 -- Room reservations
 INSERT INTO Room_Reservation (from_date, to_date, booked_at, user_ID, room_id, payment_ID) VALUES
-                                                                                    ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 1, 10, NULL),
-                                                                                    ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 3, 11, NULL),
-                                                                                    ('2023-07-10', '2023-07-10 12:30:00', '2023-07-12', 2, 12, NULL);
+                                                                                               ('2023-07-10', '2023-07-12', '2023-07-10 12:30:00', 1, 10, NULL),
+                                                                                               ('2023-07-10', '2023-07-12', '2023-07-10 12:30:00', 3, 11, NULL),
+                                                                                               ('2023-07-10', '2023-07-12', '2023-07-10 12:30:00', 2, 12, NULL);
 
 -- Cleaning history
 INSERT INTO Cleaning_History (room_id, cleaned_at) VALUES
-                                                                  (12, '2023-06-10'),
-                                                                  (12, '2023-06-11'),
-                                                                  (12, '2023-06-12');
-
+                                                       (12, '2023-06-10'),
+                                                       (12, '2023-06-11'),
+                                                       (12, '2023-06-12');
