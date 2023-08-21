@@ -224,6 +224,19 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
+    public void deleteUnpaidEntertainmentReservations() {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        List<EntertainmentReservation> entertainmentReservations = entertainmentReservationRepository.findAllByPaymentIsNull();
+        // Delete all unpaid room reservations that are in the past or 5 hours before the reservation
+        for (EntertainmentReservation entertainmentReservation : entertainmentReservations) {
+            if (entertainmentReservation.getDateFrom().before(timestamp) ||
+                    entertainmentReservation.getDateFrom().before(new Timestamp(timestamp.getTime() + 18000000))) {
+                entertainmentReservationRepository.delete(entertainmentReservation);
+            }
+        }
+    }
+
+    @Override
     public void deleteRoomReservation(int reservationId) {
         User user = securityTools.retrieveUserData();
         RoomReservation reservation = roomReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No room reservation found"));

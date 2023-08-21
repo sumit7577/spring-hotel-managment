@@ -18,6 +18,7 @@ public interface BookingService {
     List<CurrentRoomResponse> getAllCurrentRooms();
     void addPaymentToRoomReservation(int roomReservationId, Payment payment);
     void deleteUnpaidRoomReservations();
+    void deleteUnpaidEntertainmentReservations();
     void deleteRoomReservation(int reservationId);
     void deleteEntertainmentReservation(int reservationId);
 }

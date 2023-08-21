@@ -17,5 +17,6 @@ public class ScheduledTasks {
     public void cleanUpExpiredReservations() {
         log.info("Cleaning up expired reservations");
         bookingService.deleteUnpaidRoomReservations();
+        bookingService.deleteUnpaidEntertainmentReservations();
     }
 }

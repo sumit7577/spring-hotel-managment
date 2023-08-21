@@ -1,6 +1,7 @@
 package com.hotel.jorvik.repositories;
 
 import com.hotel.jorvik.models.Entertainment;
+import com.hotel.jorvik.models.EntertainmentReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
