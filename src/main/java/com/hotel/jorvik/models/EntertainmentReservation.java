@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data
 @Entity
 @Table(name = "Entertainment_Reservation")
-public class EntertainmentReservation {
+public class EntertainmentReservation extends Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

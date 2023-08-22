@@ -11,7 +11,7 @@ import jakarta.validation.constraints.*;
 @Data
 @Entity
 @Table(name = "Room_Reservation")
-public class RoomReservation {
+public class RoomReservation extends Reservation {
 
     public enum BookingStatus {
         ACTIVE,

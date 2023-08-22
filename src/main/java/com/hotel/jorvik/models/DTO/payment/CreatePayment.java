@@ -26,14 +26,14 @@ public class CreatePayment {
     @SerializedName("reservationId")
     Integer reservationId;
 
-    public CreatePayment(String paymentType,  String dateFrom, String dateTo, int roomTypeId) {
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, int roomTypeId) {
         this.paymentType = paymentType;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.roomTypeId = roomTypeId;
     }
 
-    public CreatePayment(String paymentType,  String dateFrom, String dateTo, int roomTypeId, Integer reservationId) {
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, int roomTypeId, Integer reservationId) {
         this.paymentType = paymentType;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
@@ -50,13 +50,12 @@ public class CreatePayment {
         this.entertainmentId = entertainmentId;
     }
 
-    public CreatePayment(String paymentType, String dateFrom, String dateTo, String timeFrom, String timeTo, int entertainmentId, Integer reservationId){
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, String timeFrom, String timeTo, Integer reservationId){
         this.paymentType = paymentType;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
-        this.entertainmentId = entertainmentId;
         this.reservationId = reservationId;
     }
 }

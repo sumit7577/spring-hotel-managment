@@ -1,8 +1,10 @@
 package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.DTO.payment.CreatePayment;
+import com.hotel.jorvik.models.EntertainmentType;
 import com.hotel.jorvik.models.Payment;
 import com.hotel.jorvik.models.RoomType;
+import com.hotel.jorvik.repositories.EntertainmentTypeRepository;
 import com.hotel.jorvik.repositories.PaymentRepository;
 import com.hotel.jorvik.repositories.RoomTypeRepository;
 import com.hotel.jorvik.services.BookingService;
@@ -21,6 +23,7 @@ import static com.hotel.jorvik.util.Tools.parseDate;
 public class PaymentServiceImp implements PaymentService {
 
     private final RoomTypeRepository roomTypeRepository;
+    private final EntertainmentTypeRepository entertainmentTypeRepository;
     private final PaymentRepository paymentRepository;
     private final BookingService bookingService;
 
@@ -64,6 +67,26 @@ public class PaymentServiceImp implements PaymentService {
     }
 
     private int getEntertainmentPaymentAmount(String paymentType, String dateFrom, String timeFrom, String dateTo, String timeTo) {
-        return 5;
+        Optional<EntertainmentType> entertainmentType = entertainmentTypeRepository.findByName(paymentType);
+        if (entertainmentType.isEmpty()) {
+            throw new IllegalArgumentException("Entertainment type not found");
+        }
+        int pricePerHour = entertainmentType.get().getPrice();
+
+        Timestamp sqlFromTimestamp = parseDate(dateFrom, timeFrom);
+        Timestamp sqlToTimestamp = parseDate(dateTo, timeTo);
+
+        long differenceInMilliseconds = sqlToTimestamp.getTime() - sqlFromTimestamp.getTime();
+
+        // Calculate hours and minutes separately
+        long totalHours = differenceInMilliseconds / (1000 * 60 * 60);
+        long minutes = (differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60);
+
+        // If there are any minutes, round up the hour
+        if (minutes > 0) {
+            totalHours++;
+        }
+
+        return (int) (pricePerHour * totalHours);
     }
 }

@@ -26,6 +26,18 @@ public class BookingController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    @GetMapping("/entertainment/{paymentType}/{dateFrom}/{dateTo}/{timeFrom}/{timeTo}/{entertainmentId}")
+    public ResponseEntity<Response> bookEntertainment(
+            @PathVariable String paymentType,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
+            @PathVariable @DateTimeFormat(pattern = "HH-mm") String timeFrom,
+            @PathVariable @DateTimeFormat(pattern = "HH-mm") String timeTo,
+            @PathVariable int entertainmentId) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.bookEntertainment(paymentType, dateFrom, timeFrom, dateTo, timeTo, entertainmentId)));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     @GetMapping("/room/getLastBooking")
     public ResponseEntity<Response> getLastBooking() {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getLastBooking()));

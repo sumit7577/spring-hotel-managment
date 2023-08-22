@@ -100,6 +100,11 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
+    public EntertainmentReservation getEntertainmentReservation(int reservationId) {
+        return entertainmentReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No reservation found"));
+    }
+
+    @Override
     public Room getLastBooking() {
         User user = securityTools.retrieveUserData();
         RoomReservation roomReservation = roomReservationRepository.findFirstByUserOrderByBookedAtDesc(user);
@@ -208,6 +213,13 @@ public class BookingServiceImp implements BookingService {
         RoomReservation roomReservation = roomReservationRepository.findById(roomReservationId).orElseThrow(() -> new NoSuchElementException("No room reservation found"));
         roomReservation.setPayment(payment);
         roomReservationRepository.save(roomReservation);
+    }
+
+    @Override
+    public void addPaymentToEntertainmentReservation(int reservationId, Payment payment) {
+        EntertainmentReservation entertainmentReservation = entertainmentReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No entertainment reservation found"));
+        entertainmentReservation.setPayment(payment);
+        entertainmentReservationRepository.save(entertainmentReservation);
     }
 
     @Override

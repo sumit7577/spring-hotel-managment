@@ -2,7 +2,9 @@ package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.DTO.payment.CreatePayment;
 import com.hotel.jorvik.models.DTO.payment.CreatePaymentResponse;
+import com.hotel.jorvik.models.EntertainmentReservation;
 import com.hotel.jorvik.models.Payment;
+import com.hotel.jorvik.models.Reservation;
 import com.hotel.jorvik.models.RoomReservation;
 import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.BookingService;
@@ -43,20 +45,36 @@ public class PaymentController {
         int reservationId = 0;
 
         if (createPayment.getReservationId() != null){
-            RoomReservation roomReservation = bookingService.getRoomReservation(createPayment.getReservationId());
-            if (roomReservation == null){
-                throw new IllegalArgumentException("Reservation not found");
+            if (createPayment.getPaymentType().equals("Room")) {
+                RoomReservation roomReservation = bookingService.getRoomReservation(createPayment.getReservationId());
+                if (roomReservation == null){
+                    throw new IllegalArgumentException("Reservation not found");
+                }
+                if (roomReservation.getUser().getId() != securityTools.retrieveUserData().getId()){
+                    throw new IllegalArgumentException("Reservation not found");
+                }
+                if (roomReservation.getPayment() != null){
+                    throw new IllegalArgumentException("Reservation already paid");
+                }
+                reservationId = roomReservation.getId();
+                createPayment.setRoomTypeId(roomReservation.getRoom().getRoomType().getId());
+                createPayment.setDateFrom(roomReservation.getFromDate().toString());
+                createPayment.setDateTo(roomReservation.getToDate().toString());
+            } else {
+                EntertainmentReservation entertainmentReservation = bookingService.getEntertainmentReservation(createPayment.getReservationId());
+                if (entertainmentReservation == null){
+                    throw new IllegalArgumentException("Reservation not found");
+                }
+                if (entertainmentReservation.getUser().getId() != securityTools.retrieveUserData().getId()){
+                    throw new IllegalArgumentException("Reservation not found");
+                }
+                if (entertainmentReservation.getPayment() != null){
+                    throw new IllegalArgumentException("Reservation already paid");
+                }
+                reservationId = entertainmentReservation.getId();
+                createPayment.setDateFrom(entertainmentReservation.getDateFrom().toString());
+                createPayment.setDateTo(entertainmentReservation.getDateTo().toString());
             }
-            if (roomReservation.getUser().getId() != securityTools.retrieveUserData().getId()){
-                throw new IllegalArgumentException("Reservation not found");
-            }
-            if (roomReservation.getPayment() != null){
-                throw new IllegalArgumentException("Reservation already paid");
-            }
-            reservationId = roomReservation.getId();
-            createPayment.setRoomTypeId(roomReservation.getRoom().getRoomType().getId());
-            createPayment.setDateFrom(roomReservation.getFromDate().toString());
-            createPayment.setDateTo(roomReservation.getToDate().toString());
         } else {
             reservationId = paymentService.createReservation(createPayment);
         }
@@ -102,7 +120,7 @@ public class PaymentController {
             if (paymentType.equals("Room")) {
                 bookingService.addPaymentToRoomReservation(reservationId, payment);
             } else {
-                // add payment to user
+                bookingService.addPaymentToEntertainmentReservation(reservationId, payment);
             }
             log.info("Payment succeeded: {}", paymentIntent.getId());
         } else if (event.getType().equals("payment_intent.payment_failed")) {
@@ -110,5 +128,17 @@ public class PaymentController {
             log.info("Payment failed: {}", paymentIntent.getLastPaymentError().getMessage());
         }
         return ResponseEntity.ok("Success");
+    }
+
+    private void validateReservation(Reservation reservation){
+        if (reservation == null){
+            throw new IllegalArgumentException("Reservation not found");
+        }
+        if (reservation.getUser().getId() != securityTools.retrieveUserData().getId()){
+            throw new IllegalArgumentException("Reservation not found");
+        }
+        if (entertainmentReservation.getPayment() != null){
+            throw new IllegalArgumentException("Reservation already paid");
+        }
     }
 }
