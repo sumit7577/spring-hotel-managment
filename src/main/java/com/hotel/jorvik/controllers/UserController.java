@@ -77,6 +77,13 @@ public class UserController {
         return ResponseEntity.ok().body(new SuccessResponse<>(count));
     }
 
+    @GetMapping("/get-user-entertainment-reservations-count")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
+    public ResponseEntity<Response> getUserEntertainmentReservationsCount() {
+        int count = userService.getUserEntertainmentReservationsCount();
+        return ResponseEntity.ok().body(new SuccessResponse<>(count));
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-discount/{id}")
     public ResponseEntity<Response> updateDiscount(@PathVariable Integer id, @RequestBody @Valid DiscountChangeRequest discountChangeRequest) {

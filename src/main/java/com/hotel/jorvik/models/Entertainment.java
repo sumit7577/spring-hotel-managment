@@ -1,5 +1,6 @@
 package com.hotel.jorvik.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
@@ -27,6 +28,7 @@ public class Entertainment {
     @JoinColumn(name = "entertainment_type_id")
     private EntertainmentType entertainmentType;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entertainment")
     private List<EntertainmentReservation> entertainmentReservations;
 

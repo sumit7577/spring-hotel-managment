@@ -1,8 +1,10 @@
 package com.hotel.jorvik.services.implementation;
 
 import com.hotel.jorvik.models.DTO.payment.CreatePayment;
+import com.hotel.jorvik.models.EntertainmentType;
 import com.hotel.jorvik.models.Payment;
 import com.hotel.jorvik.models.RoomType;
+import com.hotel.jorvik.repositories.EntertainmentTypeRepository;
 import com.hotel.jorvik.repositories.PaymentRepository;
 import com.hotel.jorvik.repositories.RoomTypeRepository;
 import com.hotel.jorvik.services.BookingService;
@@ -21,39 +23,26 @@ import static com.hotel.jorvik.util.Tools.parseDate;
 public class PaymentServiceImp implements PaymentService {
 
     private final RoomTypeRepository roomTypeRepository;
+    private final EntertainmentTypeRepository entertainmentTypeRepository;
     private final PaymentRepository paymentRepository;
     private final BookingService bookingService;
 
     @Override
     public int getPaymentAmount(CreatePayment createPayment) {
-        return switch (createPayment.getPaymentType()) {
-            case ROOM_PAYMENT ->
-                    getRoomPaymentAmount(createPayment.getRoomTypeId(), createPayment.getDateFrom(), createPayment.getDateTo());
-            case BICYCLE_PAYMENT ->
-                    getBicyclePaymentAmount(createPayment.getTimestampFrom());
-            case KAYAK_PAYMENT ->
-                    getKayakPaymentAmount(createPayment.getTimestampFrom());
-            case TENNIS_PAYMENT ->
-                    getTennisPaymentAmount(createPayment.getTimestampFrom());
-            default ->
-                    throw new IllegalArgumentException("Payment type not supported");
-        };
+        if (createPayment.getPaymentType().equals("Room")) {
+            return getRoomPaymentAmount(createPayment.getRoomTypeId(), createPayment.getDateFrom(), createPayment.getDateTo());
+        } else {
+            return getEntertainmentPaymentAmount(createPayment.getPaymentType(), createPayment.getDateFrom(), createPayment.getTimeFrom(), createPayment.getDateTo(), createPayment.getTimeTo());
+        }
     }
 
     @Override
     public int createReservation(CreatePayment createPayment) {
-        return switch (createPayment.getPaymentType()) {
-            case ROOM_PAYMENT ->
-                    bookingService.bookRoom(createPayment.getDateFrom(), createPayment.getDateTo(), createPayment.getRoomTypeId()).getId();
-            case BICYCLE_PAYMENT ->
-                    1;
-            case KAYAK_PAYMENT ->
-                    2;
-            case TENNIS_PAYMENT ->
-                    3;
-            default ->
-                    throw new IllegalArgumentException("Payment type not supported");
-        };
+        if (createPayment.getPaymentType().equals("Room")) {
+            return bookingService.bookRoom(createPayment.getDateFrom(), createPayment.getDateTo(), createPayment.getRoomTypeId()).getId();
+        } else {
+            return bookingService.bookEntertainment(createPayment.getPaymentType(), createPayment.getDateFrom(), createPayment.getTimeFrom(), createPayment.getDateTo(), createPayment.getTimeTo(), createPayment.getEntertainmentId()).getId();
+        }
     }
 
     @Override
@@ -77,15 +66,27 @@ public class PaymentServiceImp implements PaymentService {
         return (int) (pricePerNight * nights);
     }
 
-    private int getBicyclePaymentAmount(String timestampFrom) {
-        return 5;
-    }
+    private int getEntertainmentPaymentAmount(String paymentType, String dateFrom, String timeFrom, String dateTo, String timeTo) {
+        Optional<EntertainmentType> entertainmentType = entertainmentTypeRepository.findByName(paymentType);
+        if (entertainmentType.isEmpty()) {
+            throw new IllegalArgumentException("Entertainment type not found");
+        }
+        int pricePerHour = entertainmentType.get().getPrice();
 
-    private int getKayakPaymentAmount(String timestampFrom) {
-        return 5;
-    }
+        Timestamp sqlFromTimestamp = parseDate(dateFrom.split("\\s")[0], timeFrom);
+        Timestamp sqlToTimestamp = parseDate(dateTo.split("\\s")[0], timeTo);
 
-    private int getTennisPaymentAmount(String timestampFrom) {
-        return 5;
+        long differenceInMilliseconds = sqlToTimestamp.getTime() - sqlFromTimestamp.getTime();
+
+        // Calculate hours and minutes separately
+        long totalHours = differenceInMilliseconds / (1000 * 60 * 60);
+        long minutes = (differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60);
+
+        // If there are any minutes, round up the hour
+        if (minutes > 0) {
+            totalHours++;
+        }
+
+        return (int) (pricePerHour * totalHours);
     }
 }

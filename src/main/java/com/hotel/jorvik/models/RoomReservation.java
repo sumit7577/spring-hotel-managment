@@ -1,16 +1,19 @@
 package com.hotel.jorvik.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Date;
 import java.sql.Timestamp;
 
 import jakarta.validation.constraints.*;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "Room_Reservation")
-public class RoomReservation {
+public class RoomReservation extends Reservation {
 
     public enum BookingStatus {
         ACTIVE,
@@ -19,10 +22,9 @@ public class RoomReservation {
         AWAITING_PAYMENT
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "room_id", referencedColumnName = "id")
+    private Room room;
 
     @FutureOrPresent
     @Column(name = "from_date", nullable = false)
@@ -31,22 +33,6 @@ public class RoomReservation {
     @Future
     @Column(name = "to_date", nullable = false)
     private Date toDate;
-
-    @Column(name = "booked_at", nullable = false)
-    private Timestamp bookedAt;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "room_id", referencedColumnName = "id")
-    private Room room;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "payment_id", referencedColumnName = "id")
-    private Payment payment;
-
 
     public RoomReservation() {
     }

@@ -16,4 +16,5 @@ public interface UserService {
     void updatePhone(PhoneChangeRequest phoneChangeRequest);
     void updateDiscount(int id, DiscountChangeRequest discountChangeRequest);
     int getUserRoomReservationsCount();
+    int getUserEntertainmentReservationsCount();
 }

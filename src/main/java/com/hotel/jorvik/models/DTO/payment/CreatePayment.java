@@ -8,39 +8,32 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreatePayment {
-    public enum PaymentType {
-        ROOM_PAYMENT,
-        BICYCLE_PAYMENT,
-        KAYAK_PAYMENT,
-        TENNIS_PAYMENT,
-    }
 
     @SerializedName("paymentType")
-    private PaymentType paymentType;
-    @SerializedName("timestampFrom")
-    private String timestampFrom;
+    private String paymentType;
+    @SerializedName("timeFrom")
+    private String timeFrom;
+    @SerializedName("timeTo")
+    private String timeTo;
     @SerializedName("dateFrom")
     private String dateFrom;
     @SerializedName("dateTo")
     private String dateTo;
     @SerializedName("roomTypeId")
-    int roomTypeId;
+    Integer roomTypeId;
+    @SerializedName("entertainmentId")
+    Integer entertainmentId;
     @SerializedName("reservationId")
     Integer reservationId;
 
-    public CreatePayment(PaymentType paymentType, String timestampFrom){
-        this.paymentType = paymentType;
-        this.timestampFrom = timestampFrom;
-    }
-
-    public CreatePayment(PaymentType paymentType,  String dateFrom, String dateTo, int roomTypeId) {
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, int roomTypeId) {
         this.paymentType = paymentType;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.roomTypeId = roomTypeId;
     }
 
-    public CreatePayment(PaymentType paymentType,  String dateFrom, String dateTo, int roomTypeId, Integer reservationId) {
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, int roomTypeId, Integer reservationId) {
         this.paymentType = paymentType;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
@@ -48,8 +41,22 @@ public class CreatePayment {
         this.reservationId = reservationId;
     }
 
-    public CreatePayment(PaymentType paymentType, String timestampFrom, Integer reservationId){
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, String timeFrom, String timeTo, Integer entertainmentId){
         this.paymentType = paymentType;
-        this.timestampFrom = timestampFrom;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.timeFrom = timeFrom;
+        this.timeTo = timeTo;
+        this.entertainmentId = entertainmentId;
+    }
+
+    public CreatePayment(String paymentType, String dateFrom, String dateTo, String timeFrom, String timeTo, Integer entertainmentId, Integer reservationId){
+        this.paymentType = paymentType;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.timeFrom = timeFrom;
+        this.timeTo = timeTo;
+        this.entertainmentId = entertainmentId;
+        this.reservationId = reservationId;
     }
 }
