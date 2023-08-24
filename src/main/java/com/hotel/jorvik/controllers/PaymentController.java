@@ -47,30 +47,14 @@ public class PaymentController {
         if (createPayment.getReservationId() != null){
             if (createPayment.getPaymentType().equals("Room")) {
                 RoomReservation roomReservation = bookingService.getRoomReservation(createPayment.getReservationId());
-                if (roomReservation == null){
-                    throw new IllegalArgumentException("Reservation not found");
-                }
-                if (roomReservation.getUser().getId() != securityTools.retrieveUserData().getId()){
-                    throw new IllegalArgumentException("Reservation not found");
-                }
-                if (roomReservation.getPayment() != null){
-                    throw new IllegalArgumentException("Reservation already paid");
-                }
+                validateReservation(roomReservation);
                 reservationId = roomReservation.getId();
                 createPayment.setRoomTypeId(roomReservation.getRoom().getRoomType().getId());
                 createPayment.setDateFrom(roomReservation.getFromDate().toString());
                 createPayment.setDateTo(roomReservation.getToDate().toString());
             } else {
                 EntertainmentReservation entertainmentReservation = bookingService.getEntertainmentReservation(createPayment.getReservationId());
-                if (entertainmentReservation == null){
-                    throw new IllegalArgumentException("Reservation not found");
-                }
-                if (entertainmentReservation.getUser().getId() != securityTools.retrieveUserData().getId()){
-                    throw new IllegalArgumentException("Reservation not found");
-                }
-                if (entertainmentReservation.getPayment() != null){
-                    throw new IllegalArgumentException("Reservation already paid");
-                }
+                validateReservation(entertainmentReservation);
                 reservationId = entertainmentReservation.getId();
                 createPayment.setDateFrom(entertainmentReservation.getDateFrom().toString());
                 createPayment.setDateTo(entertainmentReservation.getDateTo().toString());
@@ -137,7 +121,7 @@ public class PaymentController {
         if (reservation.getUser().getId() != securityTools.retrieveUserData().getId()){
             throw new IllegalArgumentException("Reservation not found");
         }
-        if (entertainmentReservation.getPayment() != null){
+        if (reservation.getPayment() != null){
             throw new IllegalArgumentException("Reservation already paid");
         }
     }

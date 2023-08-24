@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-08-20 13:34:39.642
+-- Last modification date: 2023-08-23 16:48:16.046
 
 -- tables
 -- Table: Cleaning_History
@@ -70,13 +70,6 @@ CREATE TABLE Payment (
                          date timestamp NOT NULL,
                          amount int NOT NULL,
                          CONSTRAINT Payment_pk PRIMARY KEY (id)
-);
-
--- Table: Place
-CREATE TABLE Place (
-                       id int NOT NULL AUTO_INCREMENT,
-                       name varchar(100) NOT NULL,
-                       CONSTRAINT Place_pk PRIMARY KEY (id)
 );
 
 -- Table: Role
@@ -152,16 +145,6 @@ CREATE TABLE User_Role (
                            CONSTRAINT User_Role_pk PRIMARY KEY (user_id,role_id)
 );
 
--- Table: Weekend
-CREATE TABLE Weekend (
-                         id int NOT NULL AUTO_INCREMENT,
-                         description varchar(500) NOT NULL,
-                         date_from timestamp NOT NULL,
-                         date_to timestamp NOT NULL,
-                         place_id int NOT NULL,
-                         CONSTRAINT Weekend_pk PRIMARY KEY (id)
-);
-
 -- foreign keys
 -- Reference: Cleaning_Request_Room (table: Cleaning_History)
 ALTER TABLE Cleaning_History ADD CONSTRAINT Cleaning_Request_Room FOREIGN KEY Cleaning_Request_Room (room_id)
@@ -222,10 +205,6 @@ ALTER TABLE User_Role ADD CONSTRAINT User_Role_Role FOREIGN KEY User_Role_Role (
 -- Reference: User_Role_User (table: User_Role)
 ALTER TABLE User_Role ADD CONSTRAINT User_Role_User FOREIGN KEY User_Role_User (user_id)
     REFERENCES User (id);
-
--- Reference: Weekend_Place (table: Weekend)
-ALTER TABLE Weekend ADD CONSTRAINT Weekend_Place FOREIGN KEY Weekend_Place (place_id)
-    REFERENCES Place (id);
 
 -- End of file.
 

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.*;
 @Table(name = "Menu_Type")
 public class MenuType {
 
-    enum EMenu {
+    public enum EMenu {
         BREAKFAST,
         LUNCH,
         DINNER
@@ -18,7 +18,7 @@ public class MenuType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int ID;
+    private int id;
 
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "Name is mandatory")

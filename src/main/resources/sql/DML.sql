@@ -94,9 +94,21 @@ INSERT INTO Entertainment (description, lock_code, entertainment_type_ID) VALUES
 
 -- Dish
 INSERT INTO Dish (name, description, photo_directory) VALUES
-                                                          ('Spaghetti Bolognese', 'Classic spaghetti with meat sauce', 'D/photo1'),
-                                                          ('Caesar Salad', 'Crisp romaine lettuce, Parmesan cheese, and croutons', 'D/photo2'),
-                                                          ('Grilled Salmon', 'Freshly grilled salmon with lemon and herbs', 'D/photo3');
+                                                          ('French Toast', 'Thick slices of bread soaked in a mixture of eggs, milk, and cinnamon, then cooked until golden brown. Served with your choice of syrup, fresh fruit, and whipped cream.', 'https://i.imgur.com/WSwdzZ0.jpg'),
+                                                          ('Eggs Benedict', 'Poached eggs on a toasted English muffin, topped with Canadian bacon and hollandaise sauce. Served with a side of roasted potatoes', 'https://i.imgur.com/TEYhD7q.png'),
+                                                          ('Breakfast Burrito', 'Scrambled eggs, bacon or sausage, cheese, and salsa, wrapped in a warm tortilla. Served with a side of sour cream and guacamole.', 'https://i.imgur.com/nQHkCNI.jpg'),
+                                                          ('Omelet','Three eggs filled with your choice of cheese, spinach, mushrooms, onions, peppers, and more. Served with a side of toast and hash browns.','https://i.imgur.com/RAUZUhV.jpg'),
+                                                          ('Belgian Waffles','Crispy and fluffy waffles served with your choice of syrup, whipped cream, and fresh fruit.','https://i.imgur.com/0hDvpny.jpg'),
+                                                          ('Caesar Salad','Romaine lettuce, garlic croutons, shaved Parmesan, and our homemade Caesar dressing. Add grilled chicken or shrimp for an extra protein boost.','https://i.imgur.com/oX0wsdc.jpg'),
+                                                          ('Margherita Pizza','Thin crust pizza with fresh mozzarella, sliced tomatoes, basil, and a drizzle of olive oil.','https://i.imgur.com/TvsVLKS.png'),
+                                                          ('Grilled Chicken Sandwich','Grilled chicken breast, bacon, avocado, lettuce, tomato, and mayo on a ciabatta roll. Served with a side of sweet potato fries or a garden salad.','https://i.imgur.com/V92A8C5.png'),
+                                                          ('Vegetable Wrap','A whole-wheat wrap filled with roasted vegetables, hummus, and feta cheese. Served with a side of house-made sweet potato chips.','https://i.imgur.com/qUdzQFK.jpg'),
+                                                          ('Grilled Ribeye Steak','12 oz USDA Choice ribeye steak grilled to your preference and served with garlic mashed potatoes and sautéed green beans.','https://i.imgur.com/AsSu2Nq.jpg'),
+                                                          ('Seafood Paella','A Spanish classic with shrimp, clams, mussels, calamari, and chorizo, cooked with saffron rice and served with garlic bread.','https://i.imgur.com/siKer2z.jpg'),
+                                                          ('Chicken Marsala','Tender chicken breast sautéed with mushrooms, shallots, and Marsala wine sauce. Served with a side of roasted garlic asparagus and parmesan risotto.','https://i.imgur.com/FOx6n1o.jpg'),
+                                                          ('Penne Alla Vodka','Penne pasta in a creamy tomato sauce with pancetta, onion, and a splash of vodka. Topped with fresh basil and Parmesan cheese.','https://i.imgur.com/8RXGrVh.jpg'),
+                                                          ('Vegetable Curry','A vegan option with a variety of vegetables and chickpeas simmered in a flavorful coconut curry sauce, served over a bed of basmati rice.','https://i.imgur.com/rirksbb.jpg'),
+                                                          ('Shrimp Scampi','Jumbo shrimp sautéed with garlic, butter, and white wine, tossed with angel hair pasta and a touch of lemon.','https://i.imgur.com/6woOW73.jpg');
 
 -- Menu types
 INSERT INTO Menu_Type (name) VALUES
@@ -106,26 +118,21 @@ INSERT INTO Menu_Type (name) VALUES
 
 -- Menu items
 INSERT INTO Menu_Item (menu_date, dish_ID, menu_type_ID) VALUES
-                                                             ('2023-07-10', 1, 1),
-                                                             ('2023-07-10', 2, 1),
-                                                             ('2023-07-10', 3, 1),
-                                                             ('2023-07-10', 1, 2),
-                                                             ('2023-07-10', 2, 2),
-                                                             ('2023-07-10', 3, 2),
-                                                             ('2023-07-10', 1, 3),
-                                                             ('2023-07-10', 2, 3),
-                                                             ('2023-07-10', 3, 3);
-
--- Place
-INSERT INTO Place (name) VALUES
-                             ('Courtyard'),
-                             ('Restaurant');
-
--- Weekend
-INSERT INTO Weekend (description, date_from, date_to, place_id) VALUES
-                                                                    ('Bike ride', '2023-07-10 12:30:00', '2023-07-10 13:30:00', 1),
-                                                                    ('Kayaking', '2023-07-10 14:00:00', '2023-07-10 15:00:00', 1),
-                                                                    ('Cooking Classes', '2023-07-10 17:30:00', '2023-07-10 19:30:00', 2);
+                                                             (CURDATE(), 1, 1),
+                                                             (CURDATE(), 2, 1),
+                                                             (CURDATE(), 3, 1),
+                                                             (CURDATE(), 4, 1),
+                                                             (CURDATE(), 5, 1),
+                                                             (CURDATE(), 6, 2),
+                                                             (CURDATE(), 7, 2),
+                                                             (CURDATE(), 8, 2),
+                                                             (CURDATE(), 9, 2),
+                                                             (CURDATE(), 10, 3),
+                                                             (CURDATE(), 11, 3),
+                                                             (CURDATE(), 12, 3),
+                                                             (CURDATE(), 13, 3),
+                                                             (CURDATE(), 14, 3),
+                                                             (CURDATE(), 15, 3);
 
 -- Payment
 INSERT INTO Payment (date, amount) VALUES

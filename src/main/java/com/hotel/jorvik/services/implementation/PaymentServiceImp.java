@@ -73,8 +73,8 @@ public class PaymentServiceImp implements PaymentService {
         }
         int pricePerHour = entertainmentType.get().getPrice();
 
-        Timestamp sqlFromTimestamp = parseDate(dateFrom, timeFrom);
-        Timestamp sqlToTimestamp = parseDate(dateTo, timeTo);
+        Timestamp sqlFromTimestamp = parseDate(dateFrom.split("\\s")[0], timeFrom);
+        Timestamp sqlToTimestamp = parseDate(dateTo.split("\\s")[0], timeTo);
 
         long differenceInMilliseconds = sqlToTimestamp.getTime() - sqlFromTimestamp.getTime();
 
