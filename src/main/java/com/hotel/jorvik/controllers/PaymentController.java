@@ -43,6 +43,7 @@ public class PaymentController {
         log.info("Create payment intent request: {}", createPayment);
 
         int reservationId = 0;
+        System.out.println(createPayment);
 
         if (createPayment.getReservationId() != null){
             if (createPayment.getPaymentType().equals("Room")) {

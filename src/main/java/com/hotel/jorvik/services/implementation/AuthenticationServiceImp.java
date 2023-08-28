@@ -20,7 +20,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -67,8 +70,11 @@ public class AuthenticationServiceImp implements AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         emailService.sendConfirmationEmail(user);
         jwtService.saveUserToken(savedUser, jwtToken, ETokenType.ACCESS);
+        Set<ERole> roles = new HashSet<>();
+        roles.add(defaultRole.getName());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .roles(roles)
                 .build();
     }
 
@@ -86,7 +92,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
             String jwtToken = jwtService.generateToken(user);
             jwtService.revokeAllUserTokens(user, ETokenType.ACCESS);
             jwtService.saveUserToken(user, jwtToken, ETokenType.ACCESS);
+            Set<ERole> roles = new HashSet<>();
+            user.getRoles().forEach(role -> roles.add(role.getName()));
             return AuthenticationResponse.builder()
+                    .roles(roles)
                     .token(jwtToken)
                     .build();
         } catch (Exception e) {
