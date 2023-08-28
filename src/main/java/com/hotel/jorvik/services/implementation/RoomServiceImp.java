@@ -75,6 +75,11 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
+    public List<RoomType> getAllRoomTypes() {
+        return roomTypeRepository.findAll();
+    }
+
+    @Override
     public List<RoomType> getAllRoomTypesByAvailabilityAndOccupancy(String from, String to, int roomOccupancy) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {

@@ -198,8 +198,9 @@ public class BookingServiceImp implements BookingService {
     private RoomReservation.BookingStatus getEntertainmentBookingStatus(EntertainmentReservation entertainmentReservation) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Timestamp timestampPlusOneHour = new Timestamp(System.currentTimeMillis() + 3600000);
-
-        if (entertainmentReservation.getDateFrom().after(timestamp)) {
+        if (entertainmentReservation.getPayment() == null) {
+            return RoomReservation.BookingStatus.AWAITING_PAYMENT;
+        } else if (entertainmentReservation.getDateFrom().after(timestamp)) {
             return RoomReservation.BookingStatus.UPCOMING;
         } else if (entertainmentReservation.getDateFrom().before(timestampPlusOneHour)) {
             return RoomReservation.BookingStatus.COMPLETED;

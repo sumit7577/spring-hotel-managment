@@ -13,4 +13,5 @@ public interface RoomService {
     List<Room> getAllByAvailableTimeAndType(String from, String to, int roomTypeId);
     boolean isRoomAvailable(int roomId, String from, String to);
     List<RoomType> getAllRoomTypesByAvailabilityAndOccupancy(String from, String to, int roomOccupancy);
+    List<RoomType> getAllRoomTypes();
 }

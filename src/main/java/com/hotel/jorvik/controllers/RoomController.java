@@ -61,6 +61,12 @@ public class RoomController {
         return ResponseEntity.ok().body(new SuccessResponse<>(rooms));
     }
 
+    @GetMapping("/all-room-type")
+    public ResponseEntity<Response> getAllRoomTypes() {
+        List<RoomType> roomTypes = roomService.getAllRoomTypes();
+        return ResponseEntity.ok().body(new SuccessResponse<>(roomTypes));
+    }
+
     @GetMapping("/available-room-type/{dateFrom}/{dateTo}/{roomOccupancy}")
     public ResponseEntity<Response> getAllRoomTypesByAvailabilityAndOccupancy(
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,

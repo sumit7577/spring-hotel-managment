@@ -38,9 +38,8 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Response> handleIllegalArgument(IllegalArgumentException ex) {
-        throw ex;
-//        log.warn("IllegalArgumentException occurred: {}", ex.getMessage());
-//        return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
+        log.warn("IllegalArgumentException occurred: {}", ex.getMessage());
+        return ResponseEntity.status(BAD_REQUEST).body(new FailResponse<>(ex.getMessage()));
     }
 
     @ExceptionHandler(NoSuchElementException.class)
