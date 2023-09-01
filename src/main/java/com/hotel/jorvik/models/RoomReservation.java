@@ -1,6 +1,5 @@
 package com.hotel.jorvik.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.sql.Date;

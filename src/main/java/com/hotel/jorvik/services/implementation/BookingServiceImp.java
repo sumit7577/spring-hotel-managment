@@ -3,11 +3,11 @@ package com.hotel.jorvik.services.implementation;
 import com.hotel.jorvik.models.*;
 import com.hotel.jorvik.models.DTO.bookings.AllBookingsResponse;
 import com.hotel.jorvik.models.DTO.bookings.CurrentRoomResponse;
-import com.hotel.jorvik.repositories.EntertainmentRepository;
-import com.hotel.jorvik.repositories.EntertainmentReservationRepository;
-import com.hotel.jorvik.repositories.EntertainmentTypeRepository;
-import com.hotel.jorvik.repositories.RoomReservationRepository;
+import com.hotel.jorvik.models.DTO.bookings.EntertainmentReservationResponse;
+import com.hotel.jorvik.models.DTO.bookings.RoomReservationsResponse;
+import com.hotel.jorvik.repositories.*;
 import com.hotel.jorvik.security.SecurityTools;
+import com.hotel.jorvik.security.implementation.EmailSender;
 import com.hotel.jorvik.services.BookingService;
 import com.hotel.jorvik.services.RoomService;
 import com.hotel.jorvik.services.UserService;
@@ -16,12 +16,13 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.hotel.jorvik.util.Tools.parseDate;
+import static com.hotel.jorvik.util.Tools.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +30,13 @@ public class BookingServiceImp implements BookingService {
 
     private final RoomService roomService;
     private final UserService userService;
+    private final UserRepository userRepository;
     private final RoomReservationRepository roomReservationRepository;
     private final EntertainmentReservationRepository entertainmentReservationRepository;
     private final EntertainmentRepository entertainmentRepository;
     private final EntertainmentTypeRepository entertainmentTypeRepository;
     private final SecurityTools securityTools;
+    private final EmailSender emailSender;
 
     @Override
     public RoomReservation bookRoom(String from, String to, int roomTypeId) {
@@ -54,6 +57,33 @@ public class BookingServiceImp implements BookingService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         RoomReservation roomReservation = new RoomReservation(sqlFromDate, sqlToDate, timestamp, room, user);
         roomReservationRepository.save(roomReservation);
+        if (user.getVerified() != null){
+            emailSender.sendEmail(
+                    user.getEmail(),
+                    "Room reservation",
+                    "You have successfully booked room number " + room.getNumber() + " from " + from + " to " + to);
+        }
+        return roomReservation;
+    }
+
+    @Override
+    public RoomReservation bookRoomByAdmin(String dateFrom, String dateTo, int roomId, int userId) {
+        Date sqlFromDate = parseDate(dateFrom);
+        Date sqlToDate = parseDate(dateTo);
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("No user found"));
+        Room room = roomService.getById(roomId);
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        RoomReservation roomReservation = new RoomReservation(sqlFromDate, sqlToDate, timestamp, room, user);
+        roomReservationRepository.save(roomReservation);
+        if (user.getVerified() != null) {
+            emailSender.sendEmail(
+                    user.getEmail(),
+                    "Room reservation",
+                    "You have new booking at Jorvik Hotel. Room number " + room.getNumber() + ", from " + dateFrom + " to " + dateTo);
+        }
         return roomReservation;
     }
 
@@ -91,6 +121,13 @@ public class BookingServiceImp implements BookingService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         EntertainmentReservation entertainmentReservation = new EntertainmentReservation(dateTimeFrom, dateTimeTo, timestamp, user, entertainment.get());
         entertainmentReservationRepository.save(entertainmentReservation);
+
+        if (user.getVerified() != null) {
+            emailSender.sendEmail(
+                    user.getEmail(),
+                    "Entertainment reservation",
+                    "You have successfully booked " + entertainment.get().getDescription() + " from " + dateFrom + " " + timeFrom + " to " + dateTo + " " + timeTo);
+        }
         return entertainmentReservation;
     }
 
@@ -112,6 +149,59 @@ public class BookingServiceImp implements BookingService {
             throw new NoSuchElementException("No bookings found");
         }
         return roomReservation.getRoom();
+    }
+
+    @Override
+    public List<RoomReservationsResponse> getBookingsForPeriod(String dateFrom, String dateTo) {
+        List<RoomReservation> reservations = roomReservationRepository.findAllByFromDateBetweenOrToDateBetween(parseDate(dateFrom), parseDate(dateTo), parseDate(dateFrom), parseDate(dateTo));
+        List<RoomReservationsResponse> responses = new ArrayList<>();
+        for (RoomReservation reservation : reservations) {
+            responses.add(
+                    RoomReservationsResponse.builder()
+                            .reservationId(reservation.getId())
+                            .clientName(reservation.getUser().getFirstName() + " " + reservation.getUser().getLastName())
+                            .clientPhoneNumber(reservation.getUser().getPhone())
+                            .datePeriod(reservation.getFromDate().toString() + " - " + reservation.getToDate().toString())
+                            .roomNumber(reservation.getRoom().getNumber())
+                            .bookingStatus(getRoomBookingStatus(reservation))
+                            .rate(getRoomPaymentAmount(reservation.getRoom().getRoomType(), reservation.getFromDate().toString(), reservation.getToDate().toString()))
+                            .build()
+            );
+        }
+        return responses;
+    }
+
+    @Override
+    public List<EntertainmentReservationResponse> getEntertainmentBookingsForPeriod(String dateFrom, String dateTo) {
+        List<EntertainmentReservation> reservations = entertainmentReservationRepository.findAllByDateFromBetweenOrDateToBetween(parseDate(dateFrom), parseDate(dateTo), parseDate(dateFrom), parseDate(dateTo));
+        List<EntertainmentReservationResponse> responses = new ArrayList<>();
+
+        for (EntertainmentReservation reservation : reservations) {
+            SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStrFrom = dateSdf.format(reservation.getDateFrom());
+            String dateStrTo = dateSdf.format(reservation.getDateTo());
+            SimpleDateFormat timeSdf = new SimpleDateFormat("HH-mm");
+            String timeStrFrom = timeSdf.format(reservation.getDateFrom());
+            String timeStrTo = timeSdf.format(reservation.getDateTo());
+            responses.add(
+                    EntertainmentReservationResponse.builder()
+                            .reservationId(reservation.getId())
+                            .clientName(reservation.getUser().getFirstName() + " " + reservation.getUser().getLastName())
+                            .clientPhoneNumber(reservation.getUser().getPhone())
+                            .datePeriod(reservation.getDateFrom().toString() + " - " + reservation.getDateTo().toString())
+                            .entertainmentType(reservation.getEntertainment().getEntertainmentType().getName())
+                            .entertainmentElement(reservation.getEntertainment().getDescription())
+                            .bookingStatus(getEntertainmentBookingStatus(reservation))
+                            .rate(getEntertainmentPaymentAmount(
+                                    reservation.getEntertainment().getEntertainmentType(),
+                                    dateStrFrom,
+                                    timeStrFrom,
+                                    dateStrTo,
+                                    timeStrTo))
+                            .build()
+            );
+        }
+        return responses;
     }
 
     @Override
@@ -263,12 +353,30 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
+    public void deleteRoomReservationByAdmin(int reservationId) {
+        RoomReservation reservation = roomReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No room reservation found"));
+        if (reservation.getPayment() != null) {
+            throw new IllegalArgumentException("You can't delete paid reservation");
+        }
+        roomReservationRepository.delete(reservation);
+    }
+
+    @Override
     public void deleteEntertainmentReservation(int reservationId) {
         User user = securityTools.retrieveUserData();
         EntertainmentReservation reservation = entertainmentReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No entertainment reservation found"));
         if (reservation.getUser().getId() != user.getId()) {
             throw new IllegalArgumentException("You can't delete this reservation");
         }
+        if (reservation.getPayment() != null) {
+            throw new IllegalArgumentException("You can't delete paid reservation");
+        }
+        entertainmentReservationRepository.delete(reservation);
+    }
+
+    @Override
+    public void deleteEntertainmentReservationByAdmin(int reservationId) {
+        EntertainmentReservation reservation = entertainmentReservationRepository.findById(reservationId).orElseThrow(() -> new NoSuchElementException("No entertainment reservation found"));
         if (reservation.getPayment() != null) {
             throw new IllegalArgumentException("You can't delete paid reservation");
         }

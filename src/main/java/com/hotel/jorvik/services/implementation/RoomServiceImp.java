@@ -5,9 +5,11 @@ import com.hotel.jorvik.models.RoomType;
 import com.hotel.jorvik.repositories.RoomRepository;
 import com.hotel.jorvik.repositories.RoomTypeRepository;
 import com.hotel.jorvik.services.RoomService;
+import com.hotel.jorvik.util.Tools;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -52,26 +54,16 @@ public class RoomServiceImp implements RoomService {
 
     @Override
     public List<Room> getAllByAvailableTimeAndType(String from, String to, int roomTypeId) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            formatter.parse(from);
-            formatter.parse(to);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Date format is not correct");
-        }
-        return roomRepository.findAvailableRoomsByTimeAndType(from, to, roomTypeId);
+        Date dateFromSql = Tools.parseDate(from);
+        Date dateToSql = Tools.parseDate(to);
+        return roomRepository.findAvailableRoomsByTimeAndType(dateFromSql, dateToSql, roomTypeId);
     }
 
     @Override
     public boolean isRoomAvailable(int roomId, String from, String to) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            formatter.parse(from);
-            formatter.parse(to);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Date format is not correct");
-        }
-        return roomRepository.isRoomAvailable(roomId, from, to);
+        Date dateFromSql = Tools.parseDate(from);
+        Date dateToSql = Tools.parseDate(to);
+        return roomRepository.isRoomAvailable(roomId, dateFromSql, dateToSql);
     }
 
     @Override
@@ -81,13 +73,15 @@ public class RoomServiceImp implements RoomService {
 
     @Override
     public List<RoomType> getAllRoomTypesByAvailabilityAndOccupancy(String from, String to, int roomOccupancy) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            formatter.parse(from);
-            formatter.parse(to);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Date format is not correct");
-        }
-        return roomTypeRepository.findAvailableRoomTypesByOccupancy(from, to, roomOccupancy);
+        Date dateFromSql = Tools.parseDate(from);
+        Date dateToSql = Tools.parseDate(to);
+        return roomTypeRepository.findAvailableRoomTypesByOccupancy(dateFromSql, dateToSql, roomOccupancy);
+    }
+
+    @Override
+    public List<Room> getAllRoomsByAvailability(String dateFrom, String dateTo) {
+        Date dateFromSql = Tools.parseDate(dateFrom);
+        Date dateToSql = Tools.parseDate(dateTo);
+        return roomRepository.findAvailableRoomsByTime(dateFromSql, dateToSql);
     }
 }

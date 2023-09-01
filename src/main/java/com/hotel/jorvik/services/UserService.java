@@ -17,4 +17,5 @@ public interface UserService {
     void updateDiscount(int id, DiscountChangeRequest discountChangeRequest);
     int getUserRoomReservationsCount();
     int getUserEntertainmentReservationsCount();
+    List<UserDTO> getByMatching(String name);
 }

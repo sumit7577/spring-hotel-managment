@@ -24,6 +24,12 @@ public class UserController {
         return ResponseEntity.ok().body(new SuccessResponse<>(user));
     }
 
+    @GetMapping("/get-by-matching/{name}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> getByMatching(@PathVariable String name) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(userService.getByMatching(name)));
+    }
+
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     public ResponseEntity<Response> getById(@PathVariable Integer id) {

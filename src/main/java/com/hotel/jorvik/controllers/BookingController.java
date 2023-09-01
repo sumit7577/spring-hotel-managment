@@ -25,6 +25,16 @@ public class BookingController {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.bookRoom(dateFrom, dateTo, roomTypeId)));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/room-by-admin/{dateFrom}/{dateTo}/{roomId}/{userId}")
+    public ResponseEntity<Response> bookRoomByAdmin(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo,
+            @PathVariable int roomId,
+            @PathVariable int userId) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.bookRoomByAdmin(dateFrom, dateTo, roomId, userId)));
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     @GetMapping("/entertainment/{paymentType}/{dateFrom}/{dateTo}/{timeFrom}/{timeTo}/{entertainmentId}")
     public ResponseEntity<Response> bookEntertainment(
@@ -43,6 +53,22 @@ public class BookingController {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getLastBooking()));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/room/getBookingsForPeriod/{dateFrom}/{dateTo}")
+    public ResponseEntity<Response> getBookingsForPeriod(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getBookingsForPeriod(dateFrom, dateTo)));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/getEntertainmentBookingsForPeriod/{dateFrom}/{dateTo}")
+    public ResponseEntity<Response> getEntertainmentBookingsForPeriod(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateFrom,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getEntertainmentBookingsForPeriod(dateFrom, dateTo)));
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     @GetMapping("/room/getAllCurrentRooms")
     public ResponseEntity<Response> getFirstTen() {
@@ -59,6 +85,20 @@ public class BookingController {
     @DeleteMapping("/deleteBooking/{reservationId}")
     public ResponseEntity<Response> deleteBooking(@PathVariable int reservationId) {
         bookingService.deleteRoomReservation(reservationId);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @DeleteMapping("/deleteBookingByAdmin/{reservationId}")
+    public ResponseEntity<Response> deleteBookingByAdmin(@PathVariable int reservationId) {
+        bookingService.deleteRoomReservationByAdmin(reservationId);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @DeleteMapping("/deleteEntertainmentBookingByAdmin/{reservationId}")
+    public ResponseEntity<Response> deleteEntertainmentBookingByAdmin(@PathVariable int reservationId) {
+        bookingService.deleteEntertainmentReservationByAdmin(reservationId);
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 

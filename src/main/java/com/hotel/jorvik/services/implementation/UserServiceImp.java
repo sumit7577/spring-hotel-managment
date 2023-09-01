@@ -11,11 +11,13 @@ import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -38,6 +40,25 @@ public class UserServiceImp implements UserService {
     public List<UserDTO> getAll() {
         Iterable<User> users = userRepository.findAll();
         return StreamSupport.stream(users.spliterator(), false)
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDTO> getByMatching(String name) {
+        Pageable limit = PageRequest.of(0, 5);
+        String[] parts = name.split(" ", 2);
+
+        List<User> users;
+        if (parts.length == 2) {
+            String firstNamePart = parts[0];
+            String lastNamePart = parts[1];
+            users = userRepository.findByFirstNameContainingAndLastNameContaining(firstNamePart, lastNamePart, limit);
+        } else {
+            users = userRepository.findByFirstNameContainingOrLastNameContaining(name, name, limit);
+        }
+
+        return users.stream()
                 .map(UserDTO::new)
                 .collect(Collectors.toList());
     }
