@@ -2,6 +2,8 @@ package com.hotel.jorvik.services;
 
 import com.hotel.jorvik.models.DTO.bookings.AllBookingsResponse;
 import com.hotel.jorvik.models.DTO.bookings.CurrentRoomResponse;
+import com.hotel.jorvik.models.DTO.bookings.EntertainmentReservationResponse;
+import com.hotel.jorvik.models.DTO.bookings.RoomReservationsResponse;
 import com.hotel.jorvik.models.EntertainmentReservation;
 import com.hotel.jorvik.models.Payment;
 import com.hotel.jorvik.models.Room;
@@ -11,6 +13,7 @@ import java.util.List;
 
 public interface BookingService {
     RoomReservation bookRoom(String from, String to, int roomTypeId);
+    RoomReservation bookRoomByAdmin(String dateFrom, String dateTo, int roomId, int userId);
     EntertainmentReservation bookEntertainment(String type, String dateFrom, String timeFrom, String dateTo, String timeTo, int entertainmentId);
     RoomReservation getRoomReservation(int reservationId);
     EntertainmentReservation getEntertainmentReservation(int reservationId);
@@ -22,5 +25,10 @@ public interface BookingService {
     void deleteUnpaidRoomReservations();
     void deleteUnpaidEntertainmentReservations();
     void deleteRoomReservation(int reservationId);
+    void deleteRoomReservationByAdmin(int reservationId);
     void deleteEntertainmentReservation(int reservationId);
+    void deleteEntertainmentReservationByAdmin(int reservationId);
+    List<RoomReservationsResponse> getBookingsForPeriod(String dateFrom, String dateTo);
+    List<EntertainmentReservationResponse> getEntertainmentBookingsForPeriod(String dateFrom, String dateTo);
+
 }

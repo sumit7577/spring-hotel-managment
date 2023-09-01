@@ -1,14 +1,18 @@
 package com.hotel.jorvik.controllers;
 
+import com.hotel.jorvik.models.Room;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.services.EntertainmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/entertainment")
