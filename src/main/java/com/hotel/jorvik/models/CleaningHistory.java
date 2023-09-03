@@ -23,7 +23,6 @@ public class CleaningHistory {
     private Room room;
 
     @Column(name = "cleaned_at", nullable = false)
-    @FutureOrPresent
     private Timestamp cleanedAt;
 
     public CleaningHistory() {
