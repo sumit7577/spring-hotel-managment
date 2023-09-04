@@ -81,6 +81,12 @@ public class BookingController {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAll()));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/getAllByAdmin/{userId}")
+    public ResponseEntity<Response> getAll(@PathVariable int userId) {
+        return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAllByAdmin(userId)));
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     @DeleteMapping("/deleteBooking/{reservationId}")
     public ResponseEntity<Response> deleteBooking(@PathVariable int reservationId) {

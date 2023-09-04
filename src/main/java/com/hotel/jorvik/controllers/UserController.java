@@ -57,6 +57,13 @@ public class UserController {
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> update(@PathVariable Integer id, @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
+        userService.update(id, userUpdateRequest);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
+    }
+
     @PutMapping("/update-email")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     public ResponseEntity<Response> updateEmail(@RequestBody @Valid EmailChangeRequest emailChangeRequest) {

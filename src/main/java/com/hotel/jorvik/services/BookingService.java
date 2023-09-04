@@ -19,6 +19,7 @@ public interface BookingService {
     EntertainmentReservation getEntertainmentReservation(int reservationId);
     Room getLastBooking();
     List<AllBookingsResponse> getAll();
+    List<AllBookingsResponse> getAllByAdmin(int userId);
     List<CurrentRoomResponse> getAllCurrentRooms();
     void addPaymentToRoomReservation(int roomReservationId, Payment payment);
     void addPaymentToEntertainmentReservation(int reservationId, Payment payment);
@@ -30,5 +31,4 @@ public interface BookingService {
     void deleteEntertainmentReservationByAdmin(int reservationId);
     List<RoomReservationsResponse> getBookingsForPeriod(String dateFrom, String dateTo);
     List<EntertainmentReservationResponse> getEntertainmentBookingsForPeriod(String dateFrom, String dateTo);
-
 }
