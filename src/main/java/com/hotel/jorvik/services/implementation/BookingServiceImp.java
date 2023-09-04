@@ -212,6 +212,14 @@ public class BookingServiceImp implements BookingService {
         return retrieveBookingsResponse(userRooms, userEntertainments);
     }
 
+    @Override
+    public List<AllBookingsResponse> getAllByAdmin(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("No user found"));
+        List<RoomReservation> userRooms = roomReservationRepository.findAllByUser(user);
+        List<EntertainmentReservation> userEntertainments = entertainmentReservationRepository.findAllByUser(user);
+        return retrieveBookingsResponse(userRooms, userEntertainments);
+    }
+
     private List<AllBookingsResponse> retrieveBookingsResponse(List<RoomReservation> userRooms, List<EntertainmentReservation> userEntertainments) {
         List<AllBookingsResponse> bookings = new ArrayList<>();
         for(RoomReservation roomReservation : userRooms) {

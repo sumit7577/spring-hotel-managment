@@ -18,4 +18,5 @@ public interface UserService {
     int getUserRoomReservationsCount();
     int getUserEntertainmentReservationsCount();
     List<UserDTO> getByMatching(String name);
+    void update(Integer id, UserUpdateRequest userUpdateRequest);
 }

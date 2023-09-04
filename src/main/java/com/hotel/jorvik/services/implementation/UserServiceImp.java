@@ -171,4 +171,18 @@ public class UserServiceImp implements UserService {
         User user = securityTools.retrieveUserData();
         return user.getEntertainmentReservations().size();
     }
+
+    @Override
+    public void update(Integer id, UserUpdateRequest userUpdateRequest) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new NoSuchElementException("User not found");
+        }
+        user.get().setFirstName(userUpdateRequest.getFirstName());
+        user.get().setLastName(userUpdateRequest.getLastName());
+        user.get().setEmail(userUpdateRequest.getEmail());
+        user.get().setPhone(userUpdateRequest.getPhone());
+        user.get().setDiscount(userUpdateRequest.getDiscount());
+        userRepository.save(user.get());
+    }
 }
