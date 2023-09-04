@@ -15,4 +15,5 @@ public interface RoomService {
     List<RoomType> getAllRoomTypesByAvailabilityAndOccupancy(String from, String to, int roomOccupancy);
     List<Room> getAllRoomsByAvailability(String dateFrom, String dateTo);
     List<RoomType> getAllRoomTypes();
+    void updatePrices(List<RoomType> roomTypes);
 }

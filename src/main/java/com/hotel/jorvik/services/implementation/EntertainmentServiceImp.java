@@ -44,4 +44,16 @@ public class EntertainmentServiceImp implements EntertainmentService {
         return entertainmentRepository
                 .findAvailableEntertainmentsByTypeAndTime(type.get().getId(), dateTimeFrom, dateTimeTo);
     }
+
+    @Override
+    public void updatePrices(List<EntertainmentType> entertainmentTypes) {
+        entertainmentTypes.forEach(entertainmentType -> {
+            Optional<EntertainmentType> type = entertainmentTypeRepository.findById(entertainmentType.getId());
+            if (type.isEmpty()) {
+                throw new IllegalArgumentException("Entertainment type not found");
+            }
+            type.get().setPrice(entertainmentType.getPrice());
+            entertainmentTypeRepository.save(type.get());
+        });
+    }
 }
