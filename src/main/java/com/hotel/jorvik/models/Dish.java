@@ -1,8 +1,11 @@
 package com.hotel.jorvik.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -27,6 +30,10 @@ public class Dish {
     @NotBlank(message = "Photo is required")
     @Column(name = "photo_directory")
     private String photoDirectory;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dish")
+    private List<MenuItem> menuItems;
 
     public Dish() {
     }

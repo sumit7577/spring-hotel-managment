@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +28,14 @@ public class RoomController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Response> add(@RequestBody @Valid Room room) {
         Room newRoom = roomService.add(room);
         return ResponseEntity.ok().body(new SuccessResponse<>(newRoom));
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Response> delete(@PathVariable Integer id) {
         roomService.delete(id);
         return ResponseEntity.ok().body(new SuccessResponse<>("Room deleted"));
@@ -82,5 +85,12 @@ public class RoomController {
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") String dateTo) {
         List<Room> roomTypes = roomService.getAllRoomsByAvailability(dateFrom, dateTo);
         return ResponseEntity.ok().body(new SuccessResponse<>(roomTypes));
+    }
+
+    @PatchMapping("/update-price")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> updatePrice(@RequestBody List<RoomType> roomTypes) {
+        roomService.updatePrices(roomTypes);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 }

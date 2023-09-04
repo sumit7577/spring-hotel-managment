@@ -16,7 +16,6 @@ public class MenuItem {
     private int id;
 
     @Column(name = "menu_date", nullable = false)
-    @FutureOrPresent
     private Date menuDate;
 
     @ManyToOne(fetch = FetchType.EAGER)

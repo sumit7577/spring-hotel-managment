@@ -1,5 +1,6 @@
 package com.hotel.jorvik.controllers;
 
+import com.hotel.jorvik.models.EntertainmentType;
 import com.hotel.jorvik.models.Room;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
@@ -7,10 +8,8 @@ import com.hotel.jorvik.services.EntertainmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +34,12 @@ public class EntertainmentController {
             @PathVariable String timeTo) {
         return ResponseEntity.ok().body(new SuccessResponse<>(entertainmentService
                 .getAllEntertainmentElementsByAvailableDate(entertainmentType, dateFrom, timeFrom, dateTo, timeTo)));
+    }
+
+    @PatchMapping("/update-price")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Response> updatePrice(@RequestBody List<EntertainmentType> entertainmentTypes) {
+        entertainmentService.updatePrices(entertainmentTypes);
+        return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }
 }

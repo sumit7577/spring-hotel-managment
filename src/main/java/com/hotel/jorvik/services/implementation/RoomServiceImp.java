@@ -84,4 +84,17 @@ public class RoomServiceImp implements RoomService {
         Date dateToSql = Tools.parseDate(dateTo);
         return roomRepository.findAvailableRoomsByTime(dateFromSql, dateToSql);
     }
+
+    @Override
+    public void updatePrices(List<RoomType> roomTypes) {
+        for (RoomType roomType : roomTypes) {
+            Optional<RoomType> roomTypeOptional = roomTypeRepository.findById(roomType.getId());
+            if (roomTypeOptional.isEmpty()) {
+                throw new NoSuchElementException("Room type not found");
+            }
+            RoomType roomTypeFromDb = roomTypeOptional.get();
+            roomTypeFromDb.setPrice(roomType.getPrice());
+            roomTypeRepository.save(roomTypeFromDb);
+        }
+    }
 }

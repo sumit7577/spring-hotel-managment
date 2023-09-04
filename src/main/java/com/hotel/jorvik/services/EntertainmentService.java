@@ -8,4 +8,5 @@ import java.util.List;
 public interface EntertainmentService {
     List<EntertainmentType> getAllEntertainmentTypes();
     List<Entertainment> getAllEntertainmentElementsByAvailableDate(String entertainmentType, String dateFrom, String timeFrom, String dateTo, String timeTo);
+    void updatePrices(List<EntertainmentType> entertainmentTypes);
 }
