@@ -105,7 +105,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void UnauthorizedBookRoom() throws Exception {
+    public void unauthorizedBookRoom() throws Exception {
         setupTestRoom();
         mockMvc.perform(get("/api/v1/bookings/room/2028-09-05/2028-09-06/1"))
                 .andExpect(status().isUnauthorized());
