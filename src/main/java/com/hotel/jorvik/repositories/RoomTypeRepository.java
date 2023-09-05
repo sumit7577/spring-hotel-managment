@@ -12,8 +12,8 @@ public interface RoomTypeRepository extends JpaRepository<RoomType, Integer> {
     @Query("SELECT rt FROM RoomType rt WHERE rt.roomOccupancy >= :roomOccupancy AND rt.id IN (" +
             "SELECT r.roomType.id FROM Room r WHERE r.id NOT IN (" +
             "SELECT rr.room.id FROM RoomReservation rr WHERE " +
-            "(DATE(rr.fromDate) <= DATE(:dateTo) AND DATE(rr.toDate) >= DATE(:dateFrom)) OR " +
-            "(DATE(rr.fromDate) >= DATE(:dateFrom) AND DATE(rr.toDate) <= DATE(:dateTo)) OR " +
-            "(DATE(rr.fromDate) <= DATE(:dateFrom) AND DATE(rr.toDate) >= DATE(:dateTo))))")
+            "(rr.fromDate <= :dateTo AND rr.toDate >= :dateFrom) OR " +
+            "(rr.fromDate >= :dateFrom AND rr.toDate <= :dateTo) OR " +
+            "(rr.fromDate <= :dateFrom AND rr.toDate >= :dateTo)))")
     List<RoomType> findAvailableRoomTypesByOccupancy(@Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo, @Param("roomOccupancy") int roomOccupancy);
 }

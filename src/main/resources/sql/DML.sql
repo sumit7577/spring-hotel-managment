@@ -112,9 +112,9 @@ INSERT INTO Dish (name, description, photo_directory) VALUES
 
 -- Menu types
 INSERT INTO Menu_Type (name) VALUES
-                                 ('Breakfast'),
-                                 ('Lunch'),
-                                 ('Dinner');
+                                 ('BREAKFAST'),
+                                 ('LUNCH'),
+                                 ('DINNER');
 
 -- Menu items
 INSERT INTO Menu_Item (menu_date, dish_ID, menu_type_ID) VALUES
@@ -159,8 +159,8 @@ INSERT INTO User_Role (user_id, role_id) VALUES
 
 -- Entertainment reservations
 INSERT INTO Entertainment_Reservation (from_date, to_date, booked_at, user_id, entertainment_id, payment_id) VALUES
-                                                                                                                 ('2023-07-10 12:30:00', '2023-07-10 13:30:00', '2023-07-10 12:30:00', 2, 1, 2),
-                                                                                                                 ('2023-07-11 13:30:00', '2023-07-11 14:30:00', '2023-07-10 12:30:00', 3, 3, 3);
+                                                                                                                 ('2023-09-10 12:30:00', '2023-09-10 13:30:00', '2023-07-10 12:30:00', 2, 1, 2),
+                                                                                                                 ('2023-09-11 13:30:00', '2023-09-11 14:30:00', '2023-07-10 12:30:00', 3, 3, 3);
 
 -- Room reservations
 INSERT INTO Room_Reservation (from_date, to_date, booked_at, user_ID, room_id, payment_ID) VALUES
