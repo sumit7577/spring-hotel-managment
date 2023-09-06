@@ -2,9 +2,15 @@ package com.hotel.jorvik.models.DTO.user;
 
 import com.hotel.jorvik.models.User;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     int id;

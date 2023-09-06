@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -74,11 +75,13 @@ public class BookingControllerTest {
     }
 
     private void setupTestEntertainment() {
-        EntertainmentType entertainmentType = new EntertainmentType("Tennis", 100);
-        entertainmentTypeRepository.save(entertainmentType);
-        Entertainment entertainment1 = new Entertainment("Tennis1", 122, entertainmentType);
-        Entertainment entertainment2 = new Entertainment("Tennis2", 122, entertainmentType);
-        Entertainment entertainment3 = new Entertainment("Tennis3", 122, entertainmentType);
+        EntertainmentType entertainmentType1 = new EntertainmentType("Tennis", 100);
+        EntertainmentType entertainmentType2 = new EntertainmentType("Kayak", 200);
+        entertainmentTypeRepository.save(entertainmentType1);
+        entertainmentTypeRepository.save(entertainmentType2);
+        Entertainment entertainment1 = new Entertainment("Tennis1", 122, entertainmentType1);
+        Entertainment entertainment2 = new Entertainment("Tennis2", 122, entertainmentType1);
+        Entertainment entertainment3 = new Entertainment("Tennis3", 122, entertainmentType1);
         entertainmentRepository.saveAll(List.of(entertainment1, entertainment2, entertainment3));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse("2028-10-10 07:00", formatter);
@@ -92,6 +95,17 @@ public class BookingControllerTest {
     @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
     public void bookRoom() throws Exception {
+        setupTestRoom();
+        MvcResult result =  mockMvc.perform(get("/api/v1/bookings/room/2028-09-05/2028-09-06/2"))
+                .andExpect(status().is4xxClientError()).andReturn();
+        String responseJson = result.getResponse().getContentAsString();
+        assertEquals("{\"status\":\"fail\",\"data\":\"No rooms available\"}", responseJson);
+
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = "USER")
+    public void bookRoomOccupied() throws Exception {
         setupTestRoom();
         mockMvc.perform(get("/api/v1/bookings/room/2028-09-05/2028-09-06/1"))
                 .andExpect(status().isOk())
@@ -147,6 +161,16 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.data.entertainment.lockCode", is(122)))
                 .andExpect(jsonPath("$.data.entertainment.entertainmentType.name", is("Tennis")))
                 .andExpect(jsonPath("$.data.entertainment.entertainmentType.price", is(100)));
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = "USER")
+    public void bookEntertainmentOccupied() throws Exception {
+        setupTestEntertainment();
+        MvcResult result =  mockMvc.perform(get("/api/v1/bookings/entertainment/Kayak/2028-09-05/2028-09-06/17-00/18-00/1"))
+                .andExpect(status().is4xxClientError()).andReturn();
+        String responseJson = result.getResponse().getContentAsString();
+        assertEquals("{\"status\":\"fail\",\"data\":\"Entertainment not found\"}", responseJson);
     }
 
     @Test
