@@ -201,7 +201,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.data[0].clientName", is("test test")))
                 .andExpect(jsonPath("$.data[0].roomNumber", is(1)))
                 .andExpect(jsonPath("$.data[0].bookingStatus", is("AWAITING_PAYMENT")))
-                .andExpect(jsonPath("$.data[0].rate", is(100)));
+                .andExpect(jsonPath("$.data[0].rate", is(200)));
     }
 
     @Test
