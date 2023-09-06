@@ -41,8 +41,7 @@ public class Tools {
 
         Date sqlFromDate = parseDate(dateFrom);
         Date sqlToDate = parseDate(dateTo);
-
-        long nights = (sqlToDate.getTime() - sqlFromDate.getTime()) / (1000 * 60 * 60 * 24) - 1;
+        long nights = (sqlToDate.getTime() - sqlFromDate.getTime()) / (1000 * 60 * 60 * 24);
         return (int) (pricePerNight * nights);
     }
 
