@@ -3,7 +3,6 @@ package com.hotel.jorvik.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.jorvik.models.DTO.user.DiscountChangeRequest;
-import com.hotel.jorvik.models.DTO.user.EmailChangeRequest;
 import com.hotel.jorvik.models.DTO.user.UserUpdateRequest;
 import com.hotel.jorvik.models.Role;
 import com.hotel.jorvik.models.User;

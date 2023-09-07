@@ -1,7 +1,5 @@
 package com.hotel.jorvik.controllers;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.jorvik.models.*;
 import com.hotel.jorvik.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
