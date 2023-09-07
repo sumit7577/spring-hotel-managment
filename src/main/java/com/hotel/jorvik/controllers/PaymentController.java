@@ -65,6 +65,7 @@ public class PaymentController {
 
         int paymentAmount = paymentService.getPaymentAmount(createPayment);
 
+
         PaymentIntentCreateParams params =
                 PaymentIntentCreateParams.builder()
                         .setAmount(paymentAmount * 100L)
@@ -76,7 +77,6 @@ public class PaymentController {
                         .putMetadata("reservationId", String.valueOf(reservationId))
                         .putMetadata("paymentType", createPayment.getPaymentType())
                         .build();
-
         PaymentIntent paymentIntent = PaymentIntent.create(params);
         return new CreatePaymentResponse(paymentIntent.getClientSecret(), paymentAmount, reservationId);
     }

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Optional;
 
 public class Tools {
     public static Date parseDate(String date) {
@@ -41,8 +40,7 @@ public class Tools {
 
         Date sqlFromDate = parseDate(dateFrom);
         Date sqlToDate = parseDate(dateTo);
-
-        long nights = (sqlToDate.getTime() - sqlFromDate.getTime()) / (1000 * 60 * 60 * 24) - 1;
+        long nights = (sqlToDate.getTime() - sqlFromDate.getTime()) / (1000 * 60 * 60 * 24);
         return (int) (pricePerNight * nights);
     }
 

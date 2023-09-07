@@ -52,6 +52,7 @@ public class EntertainmentServiceImp implements EntertainmentService {
             if (type.isEmpty()) {
                 throw new IllegalArgumentException("Entertainment type not found");
             }
+            System.out.println(entertainmentType.getPrice());
             type.get().setPrice(entertainmentType.getPrice());
             entertainmentTypeRepository.save(type.get());
         });

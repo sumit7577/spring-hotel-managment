@@ -5,6 +5,7 @@ import com.hotel.jorvik.models.TokenType.ETokenType;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +22,7 @@ public class EmailServiceImp implements EmailService {
     private String frontEndDomain;
     private final EmailSender emailSender;
 
+    @Transactional
     @Override
     public void sendConfirmationEmail(User user) {
         String confirmationToken = jwtService.generateConfirmationToken(user);
@@ -33,8 +35,19 @@ public class EmailServiceImp implements EmailService {
         jwtService.saveUserToken(user, confirmationToken, ETokenType.EMAIL_CONFIRMATION);
     }
 
+    @Transactional
     @Override
     public void confirmEmail(String token) {
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
+        System.out.println(111111111);
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("Token is empty");
         }
@@ -59,6 +72,7 @@ public class EmailServiceImp implements EmailService {
         }
     }
 
+    @Transactional
     public void sendResetPasswordEmail(User user) {
         String resetPasswordToken = jwtService.generatePasswordResetToken(user);
         String resetPasswordLink = frontEndDomain + "/login?resetToken=" + resetPasswordToken;

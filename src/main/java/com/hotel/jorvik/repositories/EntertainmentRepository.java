@@ -12,9 +12,11 @@ public interface EntertainmentRepository extends JpaRepository<Entertainment, In
 
     @Query("SELECT e FROM Entertainment e WHERE e.entertainmentType.id = :entertainmentTypeId AND " +
             "NOT EXISTS (" +
-            "SELECT 1 FROM EntertainmentReservation er WHERE er.entertainment.id = e.id AND " +
-            "((er.dateFrom BETWEEN :startTime AND :endTime) OR" +
-            "(er.dateTo BETWEEN :startTime AND :endTime)))")
+            "SELECT 1 FROM EntertainmentReservation er WHERE er.entertainment.id = e.id AND (" +
+            "(er.dateFrom BETWEEN :startTime AND :endTime) OR " +
+            "(er.dateTo BETWEEN :startTime AND :endTime) OR " +
+            "(:startTime BETWEEN er.dateFrom AND er.dateTo) OR " +
+            "(:endTime BETWEEN er.dateFrom AND er.dateTo)))")
     List<Entertainment> findAvailableEntertainmentsByTypeAndTime(
             @Param("entertainmentTypeId") int entertainmentTypeId,
             @Param("startTime") Timestamp startTime,

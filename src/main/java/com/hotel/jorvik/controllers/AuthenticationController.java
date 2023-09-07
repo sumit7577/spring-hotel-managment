@@ -7,7 +7,7 @@ import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.models.DTO.auth.AuthenticationRequest;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.services.AuthenticationService;
-import com.hotel.jorvik.security.implementation.RegisterRequest;
+import com.hotel.jorvik.models.DTO.auth.RegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

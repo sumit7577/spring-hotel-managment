@@ -3,9 +3,15 @@ package com.hotel.jorvik.models.DTO.user;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PhoneChangeRequest {
     @NotBlank(message = "Phone number is required")
     @Size(max = 20, message = "Phone number must be at most 20 characters long")

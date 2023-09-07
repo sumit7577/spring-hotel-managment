@@ -1,12 +1,10 @@
 package com.hotel.jorvik.controllers;
 
 import com.hotel.jorvik.models.EntertainmentType;
-import com.hotel.jorvik.models.Room;
 import com.hotel.jorvik.responses.Response;
 import com.hotel.jorvik.responses.SuccessResponse;
 import com.hotel.jorvik.services.EntertainmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

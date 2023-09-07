@@ -6,7 +6,7 @@ import com.hotel.jorvik.models.Role;
 import com.hotel.jorvik.models.Role.ERole;
 import com.hotel.jorvik.models.DTO.auth.AuthenticationRequest;
 import com.hotel.jorvik.models.DTO.auth.AuthenticationResponse;
-import com.hotel.jorvik.security.implementation.RegisterRequest;
+import com.hotel.jorvik.models.DTO.auth.RegisterRequest;
 
 public interface AuthenticationService {
     AuthenticationResponse register(RegisterRequest request);

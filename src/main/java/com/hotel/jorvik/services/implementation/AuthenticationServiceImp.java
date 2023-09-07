@@ -11,7 +11,7 @@ import com.hotel.jorvik.models.TokenType.ETokenType;
 import com.hotel.jorvik.repositories.RoleRepository;
 import com.hotel.jorvik.repositories.UserRepository;
 import com.hotel.jorvik.security.*;
-import com.hotel.jorvik.security.implementation.RegisterRequest;
+import com.hotel.jorvik.models.DTO.auth.RegisterRequest;
 import com.hotel.jorvik.services.AuthenticationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

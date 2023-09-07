@@ -71,7 +71,7 @@ public class BookingController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     @GetMapping("/room/getAllCurrentRooms")
-    public ResponseEntity<Response> getFirstTen() {
+    public ResponseEntity<Response> getAllCurrentRooms() {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAllCurrentRooms()));
     }
 
@@ -83,7 +83,7 @@ public class BookingController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/getAllByAdmin/{userId}")
-    public ResponseEntity<Response> getAll(@PathVariable int userId) {
+    public ResponseEntity<Response> getAllByAdmin(@PathVariable int userId) {
         return ResponseEntity.ok().body(new SuccessResponse<>(bookingService.getAllByAdmin(userId)));
     }
 

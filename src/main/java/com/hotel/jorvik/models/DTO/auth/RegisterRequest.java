@@ -1,4 +1,4 @@
-package com.hotel.jorvik.security.implementation;
+package com.hotel.jorvik.models.DTO.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
