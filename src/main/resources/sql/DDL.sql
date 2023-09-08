@@ -1,6 +1,3 @@
--- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2023-08-23 16:48:16.046
-
 -- tables
 -- Table: Cleaning_History
 CREATE TABLE Cleaning_History (
