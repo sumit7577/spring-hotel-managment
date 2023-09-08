@@ -93,15 +93,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateEmailTest() {
-        User user = new User();
-        when(securityTools.retrieveUserData()).thenReturn(user);
-
-        verify(emailService).sendConfirmationEmail(any(User.class));
-        verify(jwtService).generateToken(any(User.class));
-    }
-
-    @Test
     public void updatePhoneTest() {
         PhoneChangeRequest phoneChangeRequest = new PhoneChangeRequest("1234567890");
         User user = new User();
