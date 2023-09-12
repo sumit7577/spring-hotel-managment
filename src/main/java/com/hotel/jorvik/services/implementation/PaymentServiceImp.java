@@ -4,9 +4,11 @@ import com.hotel.jorvik.models.DTO.payment.CreatePayment;
 import com.hotel.jorvik.models.EntertainmentType;
 import com.hotel.jorvik.models.Payment;
 import com.hotel.jorvik.models.RoomType;
+import com.hotel.jorvik.models.User;
 import com.hotel.jorvik.repositories.EntertainmentTypeRepository;
 import com.hotel.jorvik.repositories.PaymentRepository;
 import com.hotel.jorvik.repositories.RoomTypeRepository;
+import com.hotel.jorvik.security.SecurityTools;
 import com.hotel.jorvik.services.BookingService;
 import com.hotel.jorvik.services.PaymentService;
 import com.hotel.jorvik.util.Tools;
@@ -24,21 +26,26 @@ public class PaymentServiceImp implements PaymentService {
     private final EntertainmentTypeRepository entertainmentTypeRepository;
     private final PaymentRepository paymentRepository;
     private final BookingService bookingService;
+    private final SecurityTools securityTools;
 
     @Override
     public int getPaymentAmount(CreatePayment createPayment) {
+        User user = securityTools.retrieveUserData();
+        int discount = user.getDiscount();
         if (createPayment.getPaymentType().equals("Room")) {
             Optional<RoomType> roomType = roomTypeRepository.findById(createPayment.getRoomTypeId());
             if (roomType.isEmpty()) {
                 throw new IllegalArgumentException("Room type not found");
             }
-            return Tools.getRoomPaymentAmount(roomType.get(), createPayment.getDateFrom(), createPayment.getDateTo());
+            int amount = Tools.getRoomPaymentAmount(roomType.get(), createPayment.getDateFrom(), createPayment.getDateTo());
+            return amount - (amount * discount / 100);
         } else {
             Optional<EntertainmentType> entertainmentType = entertainmentTypeRepository.findByName(createPayment.getPaymentType());
             if (entertainmentType.isEmpty()) {
                 throw new IllegalArgumentException("Entertainment type not found");
             }
-            return Tools.getEntertainmentPaymentAmount(entertainmentType.get(), createPayment.getDateFrom(), createPayment.getTimeFrom(), createPayment.getDateTo(), createPayment.getTimeTo());
+            int amount = Tools.getEntertainmentPaymentAmount(entertainmentType.get(), createPayment.getDateFrom(), createPayment.getTimeFrom(), createPayment.getDateTo(), createPayment.getTimeTo());
+            return amount - (amount * discount / 100);
         }
     }
 

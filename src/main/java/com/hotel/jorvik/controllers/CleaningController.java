@@ -26,7 +26,6 @@ public class CleaningController {
     @PostMapping("/cleanRoom")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLEANER')")
     public ResponseEntity<Response> cleanRoom(@RequestBody CleanRoomRequest cleanRoomRequest) {
-        System.out.println(cleanRoomRequest.getRoomId());
         cleaningService.cleanRoom(cleanRoomRequest.getRoomId());
         return ResponseEntity.ok().body(new SuccessResponse<>(null));
     }

@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ public class PaymentController {
     private final SecurityTools securityTools;
 
     @PostMapping("/create-payment-intent")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_CLEANER', 'ROLE_RESTAURANT')")
     public CreatePaymentResponse createPaymentIntent(@RequestBody CreatePayment createPayment) throws StripeException {
         log.info("Create payment intent request: {}", createPayment);
 
@@ -64,7 +66,6 @@ public class PaymentController {
         }
 
         int paymentAmount = paymentService.getPaymentAmount(createPayment);
-
 
         PaymentIntentCreateParams params =
                 PaymentIntentCreateParams.builder()
