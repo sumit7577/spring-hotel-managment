@@ -32,6 +32,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     @Query("SELECT r FROM Room r JOIN RoomReservation rr ON r.id = rr.room.id WHERE " +
             "rr.fromDate <= CURRENT_DATE AND rr.toDate >= CURRENT_DATE AND r.id NOT IN (" +
-            "SELECT ch.room.id FROM CleaningHistory ch WHERE ch.cleanedAt = CURRENT_DATE)")
+            "SELECT ch.room.id FROM CleaningHistory ch WHERE DATE(ch.cleanedAt) = CURRENT_DATE)")
     List<Room> findActiveReservationRoomsNotCleanedToday();
 }
