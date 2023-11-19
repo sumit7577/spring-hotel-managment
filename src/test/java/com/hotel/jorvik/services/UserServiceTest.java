@@ -1,8 +1,7 @@
 package com.hotel.jorvik.services;
 
 import com.hotel.jorvik.models.*;
-import com.hotel.jorvik.models.DTO.auth.AuthenticationResponse;
-import com.hotel.jorvik.models.DTO.user.*;
+import com.hotel.jorvik.models.dto.user.*;
 import com.hotel.jorvik.repositories.*;
 import com.hotel.jorvik.security.EmailService;
 import com.hotel.jorvik.security.JwtService;
@@ -28,113 +27,110 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private EmailService emailService;
-    @Mock
-    private SecurityTools securityTools;
-    @Mock
-    private JwtService jwtService;
+  @Mock private UserRepository userRepository;
+  @Mock private EmailService emailService;
+  @Mock private SecurityTools securityTools;
+  @Mock private JwtService jwtService;
 
-    @InjectMocks
-    private UserServiceImp userService;
+  @InjectMocks private UserServiceImp userService;
 
-    @Test
-    public void getAllTest() {
-        User user1 = new User();
-        User user2 = new User();
-        List<User> users = Arrays.asList(user1, user2);
+  @Test
+  public void getAllTest() {
+    User user1 = new User();
+    User user2 = new User();
+    List<User> users = Arrays.asList(user1, user2);
 
-        when(userRepository.findAll()).thenReturn(users);
+    when(userRepository.findAll()).thenReturn(users);
 
-        List<UserDTO> result = userService.getAll();
+    List<UserDto> result = userService.getAll();
 
-        assertEquals(2, result.size());
-    }
+    assertEquals(2, result.size());
+  }
 
-    @Test
-    public void getByIdTest() {
-        int id = 1;
-        User user = new User();
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+  @Test
+  public void getByIdTest() {
+    int id = 1;
+    User user = new User();
+    when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        UserDTO result = userService.getById(id);
+    UserDto result = userService.getById(id);
 
-        assertNotNull(result);
-    }
+    assertNotNull(result);
+  }
 
-    @Test
-    public void checkEmailVerificationTest() {
-        User user = new User();
-        user.setVerified(new Timestamp(System.currentTimeMillis()));
-        when(securityTools.retrieveUserData()).thenReturn(user);
+  @Test
+  public void checkEmailVerificationTest() {
+    User user = new User();
+    user.setVerified(new Timestamp(System.currentTimeMillis()));
+    when(securityTools.retrieveUserData()).thenReturn(user);
 
-        when(securityTools.retrieveUserData()).thenReturn(user);
+    when(securityTools.retrieveUserData()).thenReturn(user);
 
-        boolean result = userService.checkEmailVerification();
+    boolean result = userService.checkEmailVerification();
 
-        assertTrue(result);
-    }
+    assertTrue(result);
+  }
 
-    @Test
-    public void getByMatchingTest() {
-        String name = "John";
-        User user1 = new User();
-        User user2 = new User();
-        List<User> users = Arrays.asList(user1, user2);
+  @Test
+  public void getByMatchingTest() {
+    String name = "John";
+    User user1 = new User();
+    User user2 = new User();
+    List<User> users = Arrays.asList(user1, user2);
 
-        Pageable limit = PageRequest.of(0, 5);
-        when(userRepository.findByFirstNameContainingOrLastNameContaining(name, name, limit)).thenReturn(users);
+    Pageable limit = PageRequest.of(0, 5);
+    when(userRepository.findByFirstNameContainingOrLastNameContaining(name, name, limit))
+        .thenReturn(users);
 
-        List<UserDTO> result = userService.getByMatching(name);
+    List<UserDto> result = userService.getByMatching(name);
 
-        assertEquals(2, result.size());
-    }
+    assertEquals(2, result.size());
+  }
 
-    @Test
-    public void updatePhoneTest() {
-        PhoneChangeRequest phoneChangeRequest = new PhoneChangeRequest("1234567890");
-        User user = new User();
+  @Test
+  public void updatePhoneTest() {
+    PhoneChangeRequest phoneChangeRequest = new PhoneChangeRequest("1234567890");
+    User user = new User();
 
-        when(securityTools.isValidPhone(anyString())).thenReturn(true);
-        when(securityTools.retrieveUserData()).thenReturn(user);
+    when(securityTools.isValidPhone(anyString())).thenReturn(true);
+    when(securityTools.retrieveUserData()).thenReturn(user);
 
-        userService.updatePhone(phoneChangeRequest);
+    userService.updatePhone(phoneChangeRequest);
 
-        verify(userRepository).save(any(User.class));
-    }
+    verify(userRepository).save(any(User.class));
+  }
 
-    @Test
-    public void updateDiscountTest() {
-        int id = 1;
-        DiscountChangeRequest discountChangeRequest = new DiscountChangeRequest(12);
-        User user = new User();
+  @Test
+  public void updateDiscountTest() {
+    int id = 1;
+    DiscountChangeRequest discountChangeRequest = new DiscountChangeRequest(12);
+    User user = new User();
 
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        userService.updateDiscount(id, discountChangeRequest);
-        verify(userRepository).save(any(User.class));
-    }
+    when(userRepository.findById(id)).thenReturn(Optional.of(user));
+    userService.updateDiscount(id, discountChangeRequest);
+    verify(userRepository).save(any(User.class));
+  }
 
-    @Test
-    public void getUserRoomReservationsCountTest() {
-        User user = new User();
-        user.setRoomReservations(Arrays.asList(new RoomReservation(), new RoomReservation()));
+  @Test
+  public void getUserRoomReservationsCountTest() {
+    User user = new User();
+    user.setRoomReservations(Arrays.asList(new RoomReservation(), new RoomReservation()));
 
-        when(securityTools.retrieveUserData()).thenReturn(user);
+    when(securityTools.retrieveUserData()).thenReturn(user);
 
-        int count = userService.getUserRoomReservationsCount();
-        assertEquals(2, count);
-    }
+    int count = userService.getUserRoomReservationsCount();
+    assertEquals(2, count);
+  }
 
-    @Test
-    public void getUserEntertainmentReservationsCountTest() {
-        User user = new User();
-        user.setEntertainmentReservations(Arrays.asList(new EntertainmentReservation(), new EntertainmentReservation()));
+  @Test
+  public void getUserEntertainmentReservationsCountTest() {
+    User user = new User();
+    user.setEntertainmentReservations(
+        Arrays.asList(new EntertainmentReservation(), new EntertainmentReservation()));
 
-        when(securityTools.retrieveUserData()).thenReturn(user);
+    when(securityTools.retrieveUserData()).thenReturn(user);
 
-        int count = userService.getUserEntertainmentReservationsCount();
-        assertEquals(2, count);
-    }
+    int count = userService.getUserEntertainmentReservationsCount();
+    assertEquals(2, count);
+  }
 }
