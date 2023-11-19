@@ -8,10 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class JorvikApplicationTests {
 
-    TokenTypeRepository tokenTypeRepository;
-
-    @Test
-    void contextLoads() {
-    }
-
+  @Test
+  void contextLoads() {}
 }
