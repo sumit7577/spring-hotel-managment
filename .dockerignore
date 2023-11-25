@@ -1,0 +1,22 @@
+HELP.md
+target/
+.mvn/
+
+# IntelliJ IDEA
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Visual Studio Code
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Operating System Files
+.DS_Store
+Thumbs.db
