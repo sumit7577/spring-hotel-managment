@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    command: --lower_case_table_names=1
+    restart: always
+    environment:
+      MYSQL_DATABASE: jorvik
+      MYSQL_USER: jorvik
+      MYSQL_PASSWORD: jorvik
+      MYSQL_ROOT_PASSWORD: jorvik
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/main/resources/sql/DDL.sql:/docker-entrypoint-initdb.d/1_script.sql
+      - ./src/main/resources/sql/DML.sql:/docker-entrypoint-initdb.d/2_script.sql
+      - ./src/main/resources/sql/Administration.sql:/docker-entrypoint-initdb.d/3_script.sql
+    networks:
+      - back-net
+
+  backend:
+    image: jorvik-backend
+    restart: always
+    environment:
+      CONNECTION_STRING: jdbc:mysql://db:3306/jorvik?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Warsaw
+      DB_LOGIN: jorvik
+      DB_PASS: jorvik
+      SENDGRID_API_KEY: dummy
+      STRIPE_SECRET_KEY: dummy
+      STRIPE_WEBHOOK_SECRET: dummy
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - back-net
+
+  frontend:
+    image: jorvik-frontend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_data:
+
+networks:
+  back-net:
+    driver: bridge
