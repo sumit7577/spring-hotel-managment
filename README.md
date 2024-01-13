@@ -49,46 +49,41 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installation
 
-1. #### Create a MySQL database
-
+#### 1. Clone docker, frontend and backend repositories to your local machine using:
 ```bash
-mysql> create database jorvik;
+git clone https://github.com/ascii00/Jorvik-Hotel-Backend.git
+git clone https://github.com/ascii00/Jorvik-Hotel-Frontend.git
 ```
 
-2. #### Fill in the database with sample data
-
+#### 2. Build the backend:
+- Navigate to the backend repository's root directory.
+- Create a Docker image:
 ```bash
-mysql> source src/main/resources/sql;
+docker build -t jorvik-backend .
 ```
 
-3. #### Clone the repository
-
+#### 3. Build the frontend:
+- Navigate to the frontend repository's root directory.
+- Create a Docker image:
 ```bash
-https://github.com/ascii00/Jorvik-Hotel-Backend.git
-```
-4. #### Navigate to the project directory:
-```bash
-cd Jorvik-Hotel-Backend
+docker build -t jorvik-frontend .
 ```
 
-5. #### Update application properties:
-
-Navigate to ```src/main/resources/application.properties``` and update the database 
-connection details accordingly.
-
-6. #### Build the application::
+#### 4. Start the application:
+- Navigate to the backend repository's root directory.
+- Launch Docker Compose:
 
 ```bash
-mvn clean install
+docker-compose up -d
 ```
 
-7. #### Run the application:
+## Stopping the Server
+
+- To stop and remove the containers, use the following command:
 
 ```bash
-mvn spring-boot:run
+docker-compose down
 ```
-
-The API server will start and by default will run on http://localhost:5000
 
 ## Architecture
 

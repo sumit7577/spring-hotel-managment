@@ -39,8 +39,7 @@ public class JwtServiceImp implements JwtService {
   private final TokenTypeRepository tokenTypeRepository;
 
   @Value("${jwt.secret}")
-  private static final String SECRET_KEY = null;
-
+  private String SECRET_KEY;
   private static final long EXPIRATION_TIME_LOGIN = 86400000 * 10; // ms * d
   private static final long EXPIRATION_TIME_CONFIRM = 86400000 * 3; // ms * d
   private static final long EXPIRATION_TIME_PASSWORD_RESET = 86400000 / 2; // ms * d

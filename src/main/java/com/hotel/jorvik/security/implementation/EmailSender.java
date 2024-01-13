@@ -7,7 +7,9 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import java.io.IOException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,18 +36,27 @@ public class EmailSender {
   }
 
   /**
-   * Sends an email using the SendGrid email service.
+   * Sends an email to the specified recipient.
    *
-   * @param to The email address of the recipient.
-   * @param subject The subject of the email.
-   * @param content The content (body) of the email.
-   * @throws IllegalArgumentException If the email could not be sent.
+   * @param to            the recipient's email address
+   * @param templateId    the ID of the email template to use
+   * @param substitutions a map of substitutions to apply to the email template
    */
-  public void sendEmail(String to, String subject, String content) {
-    Content contentEmail = new Content("text/plain", content);
+  public void sendEmail(String to, String templateId, Map<String, String> substitutions) {
     Email fromEmail = new Email(emailFrom);
     Email toEmail = new Email(to);
-    Mail mail = new Mail(fromEmail, subject, toEmail, contentEmail);
+    Mail mail = new Mail();
+    mail.setFrom(fromEmail);
+    mail.setTemplateId(templateId);
+    Personalization personalization = new Personalization();
+    personalization.addTo(toEmail);
+
+    // Add substitutions
+    for (Map.Entry<String, String> entry : substitutions.entrySet()) {
+      personalization.addDynamicTemplateData(entry.getKey(), entry.getValue());
+    }
+
+    mail.addPersonalization(personalization);
 
     Request request = new Request();
     try {
@@ -53,9 +64,12 @@ public class EmailSender {
       request.setEndpoint("mail/send");
       request.setBody(mail.build());
       Response response = sendGrid.api(request);
-      log.info(response.getStatusCode() + " " + response.getBody() + " " + response.getHeaders());
+      log.info(response.getStatusCode() +
+          " "
+          + response.getBody() +
+          " "
+          + response.getHeaders());
       if (response.getStatusCode() != 202) {
-        System.out.println(response);
         throw new RuntimeException("Email not sent");
       }
     } catch (IOException ex) {
