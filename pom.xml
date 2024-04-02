@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hotel</groupId>
-    <artifactId>jorvik</artifactId>
+    <artifactId>managment</artifactId>
     <version>1.0</version>
-    <name>Jorvik</name>
-    <description>Jorvik</description>
+    <name>Managment</name>
+    <description>Managment</description>
     <properties>
         <java.version>17</java.version>
         <checkstyle-maven-plugin.version>3.1.2</checkstyle-maven-plugin.version>
